@@ -1,0 +1,229 @@
+{
+  "data": {
+    "branding": {
+      "colorScheme": "light",
+      "fonts": [
+        {
+          "family": "Roboto",
+          "role": "body"
+        },
+        {
+          "family": "Oswald",
+          "role": "heading"
+        }
+      ],
+      "colors": {
+        "primary": "#4D4D80",
+        "secondary": "#2C2C54",
+        "accent": "#0000EE",
+        "background": "#FFFFFF",
+        "textPrimary": "#333333",
+        "link": "#0000EE"
+      },
+      "typography": {
+        "fontFamilies": {
+          "primary": "Roboto",
+          "heading": "Oswald"
+        },
+        "fontStacks": {
+          "heading": [
+            "Roboto",
+            "sans-serif",
+            "system-ui",
+            "-apple-system",
+            "Segoe UI",
+            "Ubuntu",
+            "Cantarell",
+            "Noto Sans"
+          ],
+          "body": [
+            "Roboto",
+            "sans-serif",
+            "system-ui",
+            "-apple-system",
+            "Segoe UI",
+            "Ubuntu",
+            "Cantarell",
+            "Noto Sans"
+          ],
+          "paragraph": [
+            "Roboto",
+            "sans-serif",
+            "system-ui",
+            "-apple-system",
+            "Segoe UI",
+            "Ubuntu",
+            "Cantarell",
+            "Noto Sans"
+          ]
+        },
+        "fontSizes": {
+          "h1": "16px",
+          "h2": "16px",
+          "body": "16px"
+        }
+      },
+      "spacing": {
+        "baseUnit": 4,
+        "borderRadius": "0px"
+      },
+      "components": {},
+      "images": {
+        "logo": "https://neal.fun/general/logos/deep-sea.svg",
+        "favicon": "https://neal.fun/favicons/deep-sea.png",
+        "ogImage": "https://neal.fun/share-cards/deep-sea.png",
+        "logoHref": "/"
+      },
+      "__llm_logo_reasoning": {
+        "selectedIndex": 0,
+        "reasoning": "Selected #0 because it is the only candidate, is visible, medium-sized, and links to the homepage, matching the brand inferred from the URL and page title.",
+        "confidence": 0.9,
+        "source": "llm"
+      },
+      "personality": {
+        "tone": "playful",
+        "energy": "medium",
+        "targetAudience": "general audience interested in educational content"
+      },
+      "designSystem": {
+        "framework": "custom",
+        "componentLibrary": ""
+      },
+      "confidence": {
+        "buttons": 0,
+        "colors": 0.9,
+        "overall": 0.45
+      },
+      "__llm_metadata": {
+        "logoSelection": {
+          "llmCalled": true,
+          "llmSucceeded": true,
+          "finalSource": "llm",
+          "rawLogoSelection": {
+            "selectedLogoIndex": 0,
+            "selectedLogoReasoning": "Selected #0 because it is the only candidate, is visible, medium-sized, and links to the homepage, matching the brand inferred from the URL and page title.",
+            "confidence": 0.9
+          }
+        },
+        "buttonClassification": {
+          "llmCalled": false,
+          "llmSucceeded": false
+        }
+      }
+    },
+    "metadata": {
+      "twitter:image": "https://neal.fun/share-cards/deep-sea.png",
+      "twitter:title": "The Deep Sea",
+      "og:image": "https://neal.fun/share-cards/deep-sea.png",
+      "twitter:url": "https://neal.fun/deep-sea/",
+      "og:type": "website",
+      "title": "The Deep Sea",
+      "language": "en",
+      "ogUrl": "https://neal.fun/deep-sea/",
+      "description": "An interactive page that lets you scroll down the ocean. Visit the great depths of the Mariana Trench and discover all the sea creatures hidden beneath.",
+      "twitter:description": "Scroll down the deep sea in this interactive page.",
+      "ogDescription": "Scroll down the deep sea in this interactive page.",
+      "og:url": "https://neal.fun/deep-sea/",
+      "ogTitle": "The Deep Sea",
+      "og:description": "Scroll down the deep sea in this interactive page.",
+      "ogImage": "https://neal.fun/share-cards/deep-sea.png",
+      "twitter:card": "summary_large_image",
+      "og:title": "The Deep Sea",
+      "viewport": "width=device-width,initial-scale=1",
+      "google-site-verification": "Vyp6Lq2HJODQviN98DbqlmqefoUuDj_cwlmS7jAgaao",
+      "favicon": "https://neal.fun/favicons/deep-sea.png",
+      "scrapeId": "019e74a7-a488-7199-98dd-522e5a17ead8",
+      "sourceURL": "https://neal.fun/deep-sea/",
+      "url": "https://neal.fun/deep-sea/",
+      "statusCode": 200,
+      "contentType": "text/html; charset=utf-8",
+      "timezone": "America/New_York",
+      "proxyUsed": "basic",
+      "indexId": "fc171dc1-8324-4f37-a893-c2bf3fa59109",
+      "creditsUsed": 1,
+      "concurrencyLimited": false
+    }
+  },
+  "scrape_id": "019e74a7-a488-7199-98dd-522e5a17ead8",
+  "id": "Iq0WcgkYP7aaWbxdtPtaW",
+  "startedAt": "2026-05-29T16:53:24.820Z",
+  "endedAt": "2026-05-29T16:53:50.662Z",
+  "endpoint": "scrape",
+  "formState": {
+    "parseFile": null,
+    "parseFileMeta": null,
+    "extractSetupCompleted": false,
+    "urls": [],
+    "extractSchema": {
+      "type": "object",
+      "required": [],
+      "properties": {
+        "company_mission": {
+          "type": "string"
+        },
+        "supports_sso": {
+          "type": "boolean"
+        },
+        "is_open_source": {
+          "type": "boolean"
+        },
+        "is_in_yc": {
+          "type": "boolean"
+        }
+      }
+    },
+    "extractPrompt": "Extract the company details, following the schema.",
+    "enableWebSearch": false,
+    "constrainUrls": false,
+    "options": {
+      "onlyMainContent": true,
+      "parsePDF": true,
+      "stealthMode": false,
+      "excludeTags": [],
+      "includeTags": [],
+      "waitFor": "",
+      "timeout": "",
+      "maxAge": "2 days",
+      "ignoreSitemap": false,
+      "crawlEntireDomain": false,
+      "sitemap": "include",
+      "limit": "10",
+      "maxDepth": "",
+      "excludePaths": [],
+      "includePaths": [],
+      "includeSubdomains": false,
+      "search": "",
+      "scrapeContentFromSearchResults": true,
+      "timeBasedSearch": "",
+      "location": "",
+      "prompt": ""
+    },
+    "formats": [
+      "branding"
+    ],
+    "sources": [
+      "web"
+    ],
+    "categories": [],
+    "jsonSchema": {
+      "type": "object",
+      "required": [],
+      "properties": {
+        "company_name": {
+          "type": "string"
+        },
+        "company_description": {
+          "type": "string"
+        }
+      }
+    },
+    "jsonPrompt": "",
+    "questionPrompt": "",
+    "agent": {},
+    "url": "neal.fun/deep-sea/",
+    "endpoint": "scrape"
+  },
+  "status": "success",
+  "version": "U_o77Mf2pTx0FNHxvxhLl",
+  "isPreview": false
+}
