@@ -151,7 +151,7 @@ export function Terminal({
   const [commandHistory, setCommandHistory] = useState<string[]>([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
   const [isExpanded, setIsExpanded] = useState(false);
-  const [isMinimized, setIsMinimized] = useState(false);
+  const [isMinimized, setIsMinimized] = useState(true);
   
   const inputRef = useRef<HTMLInputElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -162,6 +162,19 @@ export function Terminal({
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, [history]);
+
+  useEffect(() => {
+    const handleOpen = () => setIsMinimized(false);
+    const handleToggle = () => setIsMinimized((current) => !current);
+
+    window.addEventListener("portfolio:open-terminal", handleOpen);
+    window.addEventListener("portfolio:toggle-terminal", handleToggle);
+
+    return () => {
+      window.removeEventListener("portfolio:open-terminal", handleOpen);
+      window.removeEventListener("portfolio:toggle-terminal", handleToggle);
+    };
+  }, []);
   
   // Focus input when terminal is clicked
   const handleTerminalClick = useCallback(() => {
@@ -315,7 +328,7 @@ export function Terminal({
       case "whoami": {
         setHistory(prev => [...prev, { 
           type: "output", 
-          content: "Arielle — builder of useful systems, thoughtful interfaces, and working products." 
+          content: "Arielle - builder of useful systems, thoughtful interfaces, and working products."
         }]);
         break;
       }

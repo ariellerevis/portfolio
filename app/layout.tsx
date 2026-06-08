@@ -1,48 +1,19 @@
-import { Analytics } from '@vercel/analytics/next'
-import type { Metadata } from 'next'
-import { Geist, Geist_Mono } from 'next/font/google'
-import './globals.css'
-
-const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] })
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
-  subsets: ['latin'],
-})
+import type { Metadata } from "next";
+import "./globals.css";
 
 export const metadata: Metadata = {
-  title: '~/arielle — Portfolio',
-  description: 'Turning ideas into working systems. A systems-minded builder who creates polished products, interfaces, tools, and workflows.',
-  generator: 'v0.app',
-  icons: {
-    icon: [
-      {
-        url: '/icon-light-32x32.png',
-        media: '(prefers-color-scheme: light)',
-      },
-      {
-        url: '/icon-dark-32x32.png',
-        media: '(prefers-color-scheme: dark)',
-      },
-      {
-        url: '/icon.svg',
-        type: 'image/svg+xml',
-      },
-    ],
-    apple: '/apple-icon.png',
-  },
-}
+  title: "Arielle Revis | Portfolio",
+  description: "Arielle Revis portfolio, presented as a focused IDE-inspired workspace.",
+};
 
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode
+  children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable} dark`}>
-      <body className="font-sans antialiased overflow-hidden bg-background text-foreground">
-        {children}
-        {process.env.NODE_ENV === 'production' && <Analytics />}
-      </body>
+    <html lang="en">
+      <body>{children}</body>
     </html>
-  )
+  );
 }

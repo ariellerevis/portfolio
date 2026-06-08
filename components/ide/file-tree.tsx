@@ -18,21 +18,6 @@ interface FileTreeProps {
   onFileClick: (fileId: string) => void;
 }
 
-const fileIcons: Record<string, typeof File> = {
-  md: FileText,
-  tsx: FileCode,
-  ts: FileCode,
-  js: FileCode,
-  css: FileCode,
-  json: FileJson,
-  pdf: File,
-};
-
-function getFileIcon(extension?: string) {
-  if (!extension) return File;
-  return fileIcons[extension] || File;
-}
-
 function getExtensionColor(extension?: string) {
   switch (extension) {
     case "tsx":
@@ -53,6 +38,37 @@ function getExtensionColor(extension?: string) {
   }
 }
 
+function FileItemIcon({
+  item,
+  isOpen,
+}: {
+  item: FileItem;
+  isOpen: boolean;
+}) {
+  const className = cn(
+    "w-4 h-4 flex-shrink-0",
+    item.type === "folder" ? "text-amber-400" : getExtensionColor(item.extension)
+  );
+
+  if (item.type === "folder") {
+    return isOpen ? <FolderOpen className={className} /> : <Folder className={className} />;
+  }
+
+  switch (item.extension) {
+    case "md":
+      return <FileText className={className} />;
+    case "tsx":
+    case "ts":
+    case "js":
+    case "css":
+      return <FileCode className={className} />;
+    case "json":
+      return <FileJson className={className} />;
+    default:
+      return <File className={className} />;
+  }
+}
+
 interface TreeNodeProps {
   item: FileItem;
   depth: number;
@@ -64,10 +80,6 @@ interface TreeNodeProps {
 
 function TreeNode({ item, depth, activeFile, onFileClick, openFolders, toggleFolder }: TreeNodeProps) {
   const isOpen = openFolders.has(item.id);
-  const FileIcon = item.type === "folder" 
-    ? (isOpen ? FolderOpen : Folder)
-    : getFileIcon(item.extension);
-  
   const isActive = activeFile === item.id;
 
   return (
@@ -92,10 +104,7 @@ function TreeNode({ item, depth, activeFile, onFileClick, openFolders, toggleFol
           </span>
         )}
         {item.type === "file" && <span className="w-3.5" />}
-        <FileIcon className={cn(
-          "w-4 h-4 flex-shrink-0",
-          item.type === "folder" ? "text-amber-400" : getExtensionColor(item.extension)
-        )} />
+        <FileItemIcon item={item} isOpen={isOpen} />
         <span className={cn(
           "truncate",
           isActive ? "text-foreground" : "text-sidebar-foreground"

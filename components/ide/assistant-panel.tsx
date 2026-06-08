@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { X, Send, Sparkles } from "lucide-react";
+import { MessageCircle, X, Send, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface Message {
@@ -13,6 +13,7 @@ interface Message {
 interface AssistantPanelProps {
   isOpen: boolean;
   onClose: () => void;
+  onOpen?: () => void;
 }
 
 const suggestedQuestions = [
@@ -28,11 +29,11 @@ const predefinedResponses: Record<string, string> = {
   
   "Which project shows Arielle's product thinking?": `The Workflow Intelligence Dashboard is a great example. Arielle identified that teams were losing time switching between tools to find context. She designed and built an AI-powered dashboard that surfaces relevant information automatically, reducing context-switching time by 40%.`,
   
-  "What are Arielle's strongest skills?": `Arielle excels at bridging product, design, and engineering. Key strengths include:\n\n• Systems thinking - seeing the big picture while handling details\n• Full-stack development - React, TypeScript, Node.js, PostgreSQL\n• Product sense - framing problems and prioritizing solutions\n• Design execution - turning ideas into polished interfaces`,
+  "What are Arielle's strongest skills?": `Arielle excels at bridging product, design, and engineering. Key strengths include:\n\n- Systems thinking - seeing the big picture while handling details\n- Full-stack development - React, TypeScript, Node.js, PostgreSQL\n- Product sense - framing problems and prioritizing solutions\n- Design execution - turning ideas into polished interfaces`,
   
   "What kind of roles is Arielle looking for?": `Arielle is interested in product engineering, design engineering, or senior full-stack roles where she can own outcomes end-to-end. She thrives in environments with high autonomy, interesting technical challenges, and direct impact on users. She's open to both full-time and select freelance projects.`,
   
-  "Tell me about her experience.": `Arielle has a diverse background spanning product, design, and engineering:\n\n• Currently a Senior Product Engineer at TechCorp, leading internal tools development\n• Previously Full Stack Developer at StartupXYZ, scaling the platform to 50k users\n• Started as a Product Designer, bringing user-centered thinking to every project\n\nThis cross-functional experience gives her a unique perspective on building products.`,
+  "Tell me about her experience.": `Arielle has a diverse background spanning product, design, and engineering:\n\n- Currently a Senior Product Engineer at TechCorp, leading internal tools development\n- Previously Full Stack Developer at StartupXYZ, scaling the platform to 50k users\n- Started as a Product Designer, bringing user-centered thinking to every project\n\nThis cross-functional experience gives her a unique perspective on building products.`,
 };
 
 function getResponse(question: string): string {
@@ -63,11 +64,14 @@ function getResponse(question: string): string {
   return `Great question! While I'm a guided portfolio assistant with pre-set responses, I can tell you that Arielle is a systems-minded builder who combines product thinking, design intuition, and technical execution. Feel free to explore the portfolio sections using the file tree, or try one of the suggested questions above!`;
 }
 
-export function AssistantPanel({ isOpen, onClose }: AssistantPanelProps) {
+export function AssistantPanel({ isOpen, onClose, onOpen }: AssistantPanelProps) {
+  const [internalOpen, setInternalOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const nextMessageIdRef = useRef(0);
+  const panelIsOpen = isOpen || internalOpen;
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -79,9 +83,14 @@ export function AssistantPanel({ isOpen, onClose }: AssistantPanelProps) {
 
   const handleSend = async (text: string) => {
     if (!text.trim()) return;
+
+    const createMessageId = (type: Message["type"]) => {
+      nextMessageIdRef.current += 1;
+      return `${type}-${nextMessageIdRef.current}`;
+    };
     
     const userMessage: Message = {
-      id: Date.now().toString(),
+      id: createMessageId("user"),
       type: "user",
       content: text,
     };
@@ -91,11 +100,11 @@ export function AssistantPanel({ isOpen, onClose }: AssistantPanelProps) {
     setIsTyping(true);
     
     // Simulate typing delay
-    await new Promise((resolve) => setTimeout(resolve, 800 + Math.random() * 400));
+    await new Promise((resolve) => setTimeout(resolve, 900));
     
     const response = getResponse(text);
     const assistantMessage: Message = {
-      id: (Date.now() + 1).toString(),
+      id: createMessageId("assistant"),
       type: "assistant",
       content: response,
     };
@@ -109,10 +118,30 @@ export function AssistantPanel({ isOpen, onClose }: AssistantPanelProps) {
     handleSend(input);
   };
 
-  if (!isOpen) return null;
+  const handleOpen = () => {
+    setInternalOpen(true);
+    onOpen?.();
+  };
+
+  const handleClose = () => {
+    setInternalOpen(false);
+    onClose();
+  };
+
+  if (!panelIsOpen) {
+    return (
+      <button
+        onClick={handleOpen}
+        className="fixed bottom-5 right-5 z-50 flex h-14 w-14 items-center justify-center rounded-full border border-accent-blue/70 bg-accent-blue-soft text-accent-blue shadow-[0_16px_44px_rgba(0,0,0,0.35)] ring-1 ring-accent-blue/25 transition-all hover:-translate-y-0.5 hover:border-accent-blue hover:text-accent-blue-bright focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-blue/70"
+        aria-label="Open assistant"
+      >
+        <MessageCircle className="w-6 h-6" />
+      </button>
+    );
+  }
 
   return (
-    <div className="w-80 bg-panel border-l border-border flex flex-col h-full">
+    <div className="w-80 max-w-[calc(100vw-3.5rem)] bg-panel border-l border-border flex flex-col h-full">
       {/* Header */}
       <div className="p-4 border-b border-border flex items-start justify-between">
         <div>
@@ -125,7 +154,7 @@ export function AssistantPanel({ isOpen, onClose }: AssistantPanelProps) {
           </p>
         </div>
         <button
-          onClick={onClose}
+          onClick={handleClose}
           className="p-1.5 hover:bg-white/5 rounded transition-colors text-muted-foreground hover:text-foreground"
           aria-label="Close assistant"
         >

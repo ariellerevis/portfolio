@@ -97,8 +97,10 @@ export function MobileTerminalSheet({
     { type: "system", content: 'type "ls" to explore or use quick commands below' },
     { type: "system", content: "" },
   ]);
+  const [internalOpen, setInternalOpen] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [commandHistory, setCommandHistory] = useState<string[]>([]);
+  const sheetIsOpen = isOpen || internalOpen;
   
   const inputRef = useRef<HTMLInputElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -112,10 +114,28 @@ export function MobileTerminalSheet({
   
   // Focus input when opened
   useEffect(() => {
-    if (isOpen && inputRef.current) {
+    if (sheetIsOpen && inputRef.current) {
       setTimeout(() => inputRef.current?.focus(), 100);
     }
-  }, [isOpen]);
+  }, [sheetIsOpen]);
+
+  useEffect(() => {
+    const handleOpen = () => setInternalOpen(true);
+    const handleToggle = () => setInternalOpen((current) => !current);
+
+    window.addEventListener("portfolio:open-terminal", handleOpen);
+    window.addEventListener("portfolio:toggle-terminal", handleToggle);
+
+    return () => {
+      window.removeEventListener("portfolio:open-terminal", handleOpen);
+      window.removeEventListener("portfolio:toggle-terminal", handleToggle);
+    };
+  }, []);
+
+  const handleClose = () => {
+    setInternalOpen(false);
+    onClose();
+  };
   
   // List directory contents (mobile-friendly vertical format)
   const listDirectory = useCallback((path: string[]): string => {
@@ -227,7 +247,7 @@ export function MobileTerminalSheet({
       case "whoami": {
         setHistory(prev => [...prev, { 
           type: "output", 
-          content: "Arielle — builder of useful systems, thoughtful interfaces, and working products." 
+          content: "Arielle - builder of useful systems, thoughtful interfaces, and working products."
         }]);
         break;
       }
@@ -264,9 +284,9 @@ export function MobileTerminalSheet({
       <div
         className={cn(
           "fixed inset-0 bg-black/60 z-40 lg:hidden transition-opacity",
-          isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
+          sheetIsOpen ? "opacity-100" : "opacity-0 pointer-events-none"
         )}
-        onClick={onClose}
+        onClick={handleClose}
       />
       
       {/* Sheet */}
@@ -274,7 +294,7 @@ export function MobileTerminalSheet({
         className={cn(
           "fixed inset-x-0 bottom-0 z-50 lg:hidden transition-transform duration-200 flex flex-col",
           "bg-terminal rounded-t-2xl max-h-[85vh]",
-          isOpen ? "translate-y-0" : "translate-y-full"
+          sheetIsOpen ? "translate-y-0" : "translate-y-full"
         )}
         role="dialog"
         aria-label="Portfolio terminal"
@@ -291,7 +311,7 @@ export function MobileTerminalSheet({
             <span className="text-sm font-medium text-terminal-text uppercase tracking-wider">Terminal</span>
           </div>
           <button
-            onClick={onClose}
+            onClick={handleClose}
             className="p-2 -mr-2 hover:bg-white/10 rounded-lg transition-colors"
             aria-label="Close terminal"
           >
@@ -302,7 +322,7 @@ export function MobileTerminalSheet({
         {/* Terminal Content */}
         <div 
           ref={scrollRef}
-          className="flex-1 overflow-y-auto px-4 py-3 font-mono text-sm leading-relaxed min-h-[200px]"
+          className="flex-1 overflow-y-auto px-4 py-3 font-mono text-[13px] leading-relaxed min-h-[200px] sm:text-sm"
         >
           {history.map((entry, i) => (
             <div key={i} className="whitespace-pre-wrap mb-1">
@@ -326,10 +346,10 @@ export function MobileTerminalSheet({
           ))}
           
           {/* Current prompt */}
-          <div className="flex items-center">
-            <span className="text-terminal-accent">{currentPathStr}</span>
-            <span className="text-terminal-muted"> $ </span>
-            <span className="text-terminal-text animate-pulse">_</span>
+          <div className="flex min-w-0 flex-wrap items-baseline gap-x-1">
+            <span className="max-w-full break-all text-terminal-accent">{currentPathStr}</span>
+            <span className="text-terminal-muted">$</span>
+            <span className="inline-block h-4 w-2 translate-y-0.5 bg-terminal-accent animate-pulse" aria-hidden="true" />
           </div>
         </div>
         

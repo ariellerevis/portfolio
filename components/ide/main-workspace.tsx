@@ -1,21 +1,70 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { ArrowLeft, ArrowRight, ChevronDown, Sparkles, ExternalLink } from "lucide-react";
 
 interface MainWorkspaceProps {
   activeSection: string;
   onNavigate: (section: string) => void;
   onOpenAssistant: () => void;
+  onOpenTerminal?: () => void;
 }
 
-export function MainWorkspace({ activeSection, onNavigate, onOpenAssistant }: MainWorkspaceProps) {
+const typewriterPhrases = [
+  "product thinking",
+  "design systems",
+  "usable interfaces",
+  "working prototypes",
+];
+
+function useLoopingTypewriter(phrases: string[]) {
+  const [phraseIndex, setPhraseIndex] = useState(0);
+  const [characterIndex, setCharacterIndex] = useState(0);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  useEffect(() => {
+    const phrase = phrases[phraseIndex];
+    const isAtEnd = characterIndex === phrase.length;
+    const isAtStart = characterIndex === 0;
+    const delay = isDeleting ? 38 : isAtEnd ? 1300 : 68;
+
+    const timeout = window.setTimeout(() => {
+      if (!isDeleting && isAtEnd) {
+        setIsDeleting(true);
+        return;
+      }
+
+      if (isDeleting && isAtStart) {
+        setIsDeleting(false);
+        setPhraseIndex((current) => (current + 1) % phrases.length);
+        return;
+      }
+
+      setCharacterIndex((current) => current + (isDeleting ? -1 : 1));
+    }, delay);
+
+    return () => window.clearTimeout(timeout);
+  }, [characterIndex, isDeleting, phraseIndex, phrases]);
+
+  return phrases[phraseIndex].slice(0, characterIndex);
+}
+
+export function MainWorkspace({
+  activeSection,
+  onNavigate,
+  onOpenAssistant,
+  onOpenTerminal,
+}: MainWorkspaceProps) {
   return (
     <div className="flex-1 bg-workspace overflow-y-auto">
       <div className="min-h-full flex flex-col">
-        {activeSection === "home" && (
-          <HomeSection onNavigate={onNavigate} onOpenAssistant={onOpenAssistant} />
+        {(activeSection === "home" || activeSection === "about") && (
+          <HomeSection
+            onNavigate={onNavigate}
+            onOpenAssistant={onOpenAssistant}
+            onOpenTerminal={onOpenTerminal}
+          />
         )}
-        {activeSection === "about" && <AboutSection />}
         {activeSection === "projects" && <ProjectsSection />}
         {activeSection === "experience" && <ExperienceSection />}
         {activeSection === "skills" && <SkillsSection />}
@@ -25,98 +74,118 @@ export function MainWorkspace({ activeSection, onNavigate, onOpenAssistant }: Ma
   );
 }
 
-function HomeSection({ onNavigate, onOpenAssistant }: { onNavigate: (section: string) => void; onOpenAssistant: () => void }) {
+function HomeSection({
+  onNavigate,
+  onOpenAssistant,
+  onOpenTerminal,
+}: {
+  onNavigate: (section: string) => void;
+  onOpenAssistant: () => void;
+  onOpenTerminal?: () => void;
+}) {
+  const typedText = useLoopingTypewriter(typewriterPhrases);
+
+  const handleOpenTerminal = () => {
+    onOpenTerminal?.();
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new CustomEvent("portfolio:open-terminal"));
+    }
+  };
+
   return (
-    <div className="flex-1 flex flex-col items-center justify-center p-8 relative">
-      {/* Hero */}
-      <div className="text-center max-w-3xl mx-auto mb-16">
-        <h1 className="text-7xl md:text-8xl lg:text-9xl font-bold tracking-tight mb-6">
-          <span className="text-accent-blue">~/</span>
-          <span className="text-foreground">arielle</span>
-          <span className="inline-block w-3 h-16 md:h-20 lg:h-24 bg-accent-blue ml-2 animate-blink" />
-        </h1>
-        <p className="font-mono text-lg md:text-xl text-muted-foreground">
-          <span className="text-muted-foreground/60">/*</span>
-          {" "}turning ideas into working systems{" "}
-          <span className="text-muted-foreground/60">*/</span>
-        </p>
-      </div>
-
-      {/* Navigation Prompts */}
-      <div className="flex flex-col sm:flex-row gap-6 text-accent-blue font-mono text-sm md:text-base">
-        <button 
-          onClick={() => onNavigate("projects")}
-          className="flex items-center gap-2 hover:text-accent-blue-bright transition-colors group"
-        >
-          <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-          <span>explore folders</span>
-        </button>
-        
-        <button 
-          onClick={onOpenAssistant}
-          className="flex items-center gap-2 hover:text-accent-blue-bright transition-colors group"
-        >
-          <span>ask questions</span>
-          <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-        </button>
-        
-        <button 
-          onClick={() => onNavigate("about")}
-          className="flex items-center gap-2 hover:text-accent-blue-bright transition-colors group"
-        >
-          <span>navigate directories</span>
-          <ChevronDown className="w-4 h-4 group-hover:translate-y-1 transition-transform" />
-        </button>
-      </div>
-
-      {/* Intro Text */}
-      <div className="max-w-2xl mx-auto mt-24 text-center">
-        <p className="text-muted-foreground leading-relaxed">
-          I design and build systems that make complex ideas usable — from product prototypes 
-          and internal tools to polished digital experiences. Systems thinking meets crafted execution.
-        </p>
-      </div>
-    </div>
-  );
-}
-
-function AboutSection() {
-  return (
-    <div className="max-w-3xl mx-auto p-8 md:p-12">
-      <div className="font-mono text-xs text-muted-foreground mb-4">~/portfolio/about.md</div>
-      <h2 className="text-3xl font-bold mb-8">About</h2>
-      <div className="space-y-6 text-muted-foreground leading-relaxed">
-        <p>
-          {`I'm a systems-minded builder who turns vague ideas into working products. My approach blends
-          product thinking, design intuition, and technical execution — I care about both the big picture
-          and the implementation details.`}
-        </p>
-        <p>
-          I work across the stack: defining problems, mapping user flows, designing interfaces, writing 
-          code, and shipping features. I thrive in environments where I can own outcomes end-to-end.
-        </p>
-        <div className="pt-4 border-t border-border">
-          <h3 className="text-foreground font-semibold mb-4">How I Work</h3>
-          <ul className="space-y-2">
-            <li className="flex items-start gap-3">
-              <span className="text-accent-blue">→</span>
-              <span>Start with the problem, not the solution</span>
-            </li>
-            <li className="flex items-start gap-3">
-              <span className="text-accent-blue">→</span>
-              <span>Prototype fast, iterate faster</span>
-            </li>
-            <li className="flex items-start gap-3">
-              <span className="text-accent-blue">→</span>
-              <span>Design systems that scale, not just features</span>
-            </li>
-            <li className="flex items-start gap-3">
-              <span className="text-accent-blue">→</span>
-              <span>Ship early, learn continuously</span>
-            </li>
-          </ul>
+    <div className="flex-1 px-4 py-10 sm:p-8 md:p-12">
+      <section className="min-h-[calc(100vh-7rem)] max-w-5xl mx-auto flex flex-col justify-center">
+        <div className="text-center max-w-4xl mx-auto">
+          <div className="font-mono text-xs text-muted-foreground mb-4">~/portfolio/about.md</div>
+          <h1 className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-bold tracking-tight mb-6 leading-none">
+            <span className="text-accent-blue">~/</span>
+            <span className="text-foreground">arielle</span>
+            <span
+              className="inline-block h-[0.8em] max-h-14 w-[0.08em] min-w-1 bg-accent-blue ml-2 align-middle animate-blink sm:max-h-20 lg:max-h-24"
+              aria-hidden="true"
+            />
+          </h1>
+          <p className="font-mono text-base sm:text-lg md:text-xl text-muted-foreground">
+            <span className="text-muted-foreground/60">{`/*`}</span>
+            {" "}turning ideas into working systems{" "}
+            <span className="text-muted-foreground/60">{`*/`}</span>
+          </p>
+          <div
+            className="mt-6 inline-flex max-w-full items-center rounded-lg border border-border bg-elevated/60 px-3 py-2 font-mono text-sm text-foreground shadow-[0_0_0_1px_rgba(255,255,255,0.02)]"
+            aria-label={`Currently focused on ${typedText || typewriterPhrases[0]}`}
+          >
+            <span className="text-muted-foreground">{`const focus = "`}</span>
+            <span className="text-accent-blue-bright">{typedText}</span>
+            <span className="text-muted-foreground">{`"`}</span>
+            <span className="ml-1 inline-block h-4 w-2 bg-accent-blue animate-blink" aria-hidden="true" />
+          </div>
         </div>
-      </div>
+
+        <div className="mt-10 grid grid-cols-1 gap-4 text-accent-blue font-mono text-sm md:text-base sm:grid-cols-2">
+          <button
+            onClick={() => onNavigate("projects")}
+            className="flex items-center justify-center gap-2 rounded-lg border border-transparent px-3 py-2 hover:border-accent-blue/30 hover:bg-accent-blue-soft hover:text-accent-blue-bright transition-colors group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-blue/60"
+          >
+            <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+            <span>explore folders</span>
+          </button>
+
+          <button
+            onClick={onOpenAssistant}
+            className="flex items-center justify-center gap-2 rounded-lg border border-transparent px-3 py-2 hover:border-accent-blue/30 hover:bg-accent-blue-soft hover:text-accent-blue-bright transition-colors group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-blue/60"
+          >
+            <span>ask questions</span>
+            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+          </button>
+
+          <button
+            onClick={handleOpenTerminal}
+            className="flex items-center justify-center gap-2 rounded-lg border border-transparent px-3 py-2 hover:border-accent-blue/30 hover:bg-accent-blue-soft hover:text-accent-blue-bright transition-colors group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-blue/60 sm:col-span-2"
+          >
+            <span>navigate using terminal</span>
+            <ChevronDown className="w-4 h-4 group-hover:translate-y-1 transition-transform" />
+          </button>
+        </div>
+
+        <div className="mt-14 grid gap-5 text-left lg:grid-cols-[minmax(0,1.15fr)_minmax(280px,0.85fr)]">
+          <div className="rounded-lg border border-border bg-elevated/50 p-5 sm:p-6">
+            <h2 className="text-2xl font-bold mb-5 text-foreground">About</h2>
+            <div className="space-y-5 text-muted-foreground leading-relaxed">
+              <p>
+                {`I'm a systems-minded builder who turns vague ideas into working products. My approach blends
+                product thinking, design intuition, and technical execution - I care about both the big picture
+                and the implementation details.`}
+              </p>
+              <p>
+                I work across the stack: defining problems, mapping user flows, designing interfaces, writing
+                code, and shipping features. I thrive in environments where I can own outcomes end-to-end.
+              </p>
+            </div>
+          </div>
+
+          <div className="rounded-lg border border-border bg-panel/60 p-5 sm:p-6">
+            <h3 className="text-foreground font-semibold mb-4">How I Work</h3>
+            <ul className="space-y-3 text-muted-foreground">
+              <li className="flex items-start gap-3">
+                <span className="text-accent-blue font-mono">-&gt;</span>
+                <span>Start with the problem, not the solution</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <span className="text-accent-blue font-mono">-&gt;</span>
+                <span>Prototype fast, iterate faster</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <span className="text-accent-blue font-mono">-&gt;</span>
+                <span>Design systems that scale, not just features</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <span className="text-accent-blue font-mono">-&gt;</span>
+                <span>Ship early, learn continuously</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
@@ -189,21 +258,21 @@ function ExperienceSection() {
     {
       title: "Senior Product Engineer",
       company: "TechCorp",
-      period: "2022 — Present",
+      period: "2022 - Present",
       description: "Leading product development for internal tools platform. Shipping features end-to-end from user research to production.",
       highlights: ["Launched 3 major products", "Grew team from 2 to 8", "Established design system"],
     },
     {
       title: "Full Stack Developer",
       company: "StartupXYZ",
-      period: "2020 — 2022",
+      period: "2020 - 2022",
       description: "Built and scaled customer-facing applications. Owned entire features from database design to UI implementation.",
       highlights: ["Scaled platform to 50k users", "Reduced load time by 60%", "Implemented CI/CD pipeline"],
     },
     {
       title: "Product Designer",
       company: "DesignStudio",
-      period: "2018 — 2020",
+      period: "2018 - 2020",
       description: "Designed digital products for clients across fintech, healthcare, and e-commerce. Conducted user research and usability testing.",
       highlights: ["Designed 20+ products", "Led design workshops", "Created design documentation"],
     },
@@ -311,8 +380,8 @@ function ContactSection() {
             </div>
             <ExternalLink className="w-4 h-4 text-muted-foreground ml-auto" />
           </a>
-          <a 
-            href="https://github.com/arielle" 
+          <a
+            href="https://github.com/ariellerevis/"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-3 p-4 bg-elevated rounded-lg border border-border hover:border-accent-blue/30 transition-colors group"
@@ -322,12 +391,12 @@ function ContactSection() {
             </div>
             <div>
               <div className="text-foreground font-medium group-hover:text-accent-blue transition-colors">GitHub</div>
-              <div className="text-sm text-muted-foreground">@arielle</div>
+              <div className="text-sm text-muted-foreground">@ariellerevis</div>
             </div>
             <ExternalLink className="w-4 h-4 text-muted-foreground ml-auto" />
           </a>
-          <a 
-            href="https://linkedin.com/in/arielle" 
+          <a
+            href="https://www.linkedin.com/in/arielle-revis/"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-3 p-4 bg-elevated rounded-lg border border-border hover:border-accent-blue/30 transition-colors group"
@@ -337,7 +406,7 @@ function ContactSection() {
             </div>
             <div>
               <div className="text-foreground font-medium group-hover:text-accent-blue transition-colors">LinkedIn</div>
-              <div className="text-sm text-muted-foreground">/in/arielle</div>
+              <div className="text-sm text-muted-foreground">/in/arielle-revis</div>
             </div>
             <ExternalLink className="w-4 h-4 text-muted-foreground ml-auto" />
           </a>

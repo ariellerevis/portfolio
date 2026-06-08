@@ -26,11 +26,11 @@ const predefinedResponses: Record<string, string> = {
   
   "Which project shows Arielle's product thinking?": `The Workflow Intelligence Dashboard is a great example. Arielle designed and built an AI-powered dashboard that surfaces relevant information automatically, reducing context-switching time by 40%.`,
   
-  "What are Arielle's strongest skills?": `Arielle excels at bridging product, design, and engineering:\n\n• Systems thinking\n• Full-stack development (React, TypeScript, Node.js)\n• Product sense\n• Design execution`,
+  "What are Arielle's strongest skills?": `Arielle excels at bridging product, design, and engineering:\n\n- Systems thinking\n- Full-stack development (React, TypeScript, Node.js)\n- Product sense\n- Design execution`,
   
   "What kind of roles is Arielle looking for?": `Product engineering, design engineering, or senior full-stack roles with high autonomy and direct impact on users. Open to both full-time and select freelance projects.`,
   
-  "Tell me about her experience.": `Arielle has experience spanning product, design, and engineering:\n\n• Senior Product Engineer at TechCorp\n• Full Stack Developer at StartupXYZ\n• Started as a Product Designer`,
+  "Tell me about her experience.": `Arielle has experience spanning product, design, and engineering:\n\n- Senior Product Engineer at TechCorp\n- Full Stack Developer at StartupXYZ\n- Started as a Product Designer`,
 };
 
 function getResponse(question: string): string {
@@ -61,6 +61,7 @@ export function MobileAssistantContent({ onClose }: MobileAssistantContentProps)
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const nextMessageIdRef = useRef(0);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -72,9 +73,14 @@ export function MobileAssistantContent({ onClose }: MobileAssistantContentProps)
 
   const handleSend = async (text: string) => {
     if (!text.trim()) return;
+
+    const createMessageId = (type: Message["type"]) => {
+      nextMessageIdRef.current += 1;
+      return `${type}-${nextMessageIdRef.current}`;
+    };
     
     const userMessage: Message = {
-      id: Date.now().toString(),
+      id: createMessageId("user"),
       type: "user",
       content: text,
     };
@@ -83,11 +89,11 @@ export function MobileAssistantContent({ onClose }: MobileAssistantContentProps)
     setInput("");
     setIsTyping(true);
     
-    await new Promise((resolve) => setTimeout(resolve, 600 + Math.random() * 300));
+    await new Promise((resolve) => setTimeout(resolve, 700));
     
     const response = getResponse(text);
     const assistantMessage: Message = {
-      id: (Date.now() + 1).toString(),
+      id: createMessageId("assistant"),
       type: "assistant",
       content: response,
     };
