@@ -1,10 +1,14 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { FileTree, type FileItem } from "./file-tree";
 
 interface ExplorerSidebarProps {
   activeFile: string | null;
   onFileClick: (fileId: string) => void;
+  defaultCollapsed?: boolean;
+  isCollapsed?: boolean;
+  onCollapsedChange?: (isCollapsed: boolean) => void;
 }
 
 const portfolioTree: FileItem[] = [
@@ -51,13 +55,56 @@ const portfolioTree: FileItem[] = [
   { id: "resume", name: "resume.pdf", type: "file", extension: "pdf" },
 ];
 
-export function ExplorerSidebar({ activeFile, onFileClick }: ExplorerSidebarProps) {
+export function ExplorerSidebar({
+  activeFile,
+  onFileClick,
+  defaultCollapsed = true,
+  isCollapsed,
+  onCollapsedChange,
+}: ExplorerSidebarProps) {
+  const [internalCollapsed, setInternalCollapsed] = useState(defaultCollapsed);
+  const collapsed = isCollapsed ?? internalCollapsed;
+
+  useEffect(() => {
+    const setCollapsed = (nextValue: boolean | ((current: boolean) => boolean)) => {
+      if (isCollapsed === undefined) {
+        setInternalCollapsed((current) => {
+          const next = typeof nextValue === "function" ? nextValue(current) : nextValue;
+          onCollapsedChange?.(next);
+          return next;
+        });
+        return;
+      }
+
+      const next = typeof nextValue === "function" ? nextValue(isCollapsed) : nextValue;
+      onCollapsedChange?.(next);
+    };
+
+    const handleToggle = () => setCollapsed((current) => !current);
+    const handleOpen = () => setCollapsed(false);
+
+    window.addEventListener("portfolio:toggle-explorer", handleToggle);
+    window.addEventListener("portfolio:open-explorer", handleOpen);
+
+    return () => {
+      window.removeEventListener("portfolio:toggle-explorer", handleToggle);
+      window.removeEventListener("portfolio:open-explorer", handleOpen);
+    };
+  }, [isCollapsed, onCollapsedChange]);
+
+  if (collapsed) {
+    return null;
+  }
+
   return (
     <div className="w-56 bg-explorer border-r border-border flex flex-col h-full overflow-hidden">
       <div className="p-3 border-b border-border">
-        <h2 className="text-xs font-semibold uppercase tracking-wider text-accent-blue">
+        <button
+          onClick={() => onFileClick("about")}
+          className="text-xs font-semibold uppercase tracking-wider text-accent-blue hover:text-accent-blue-bright transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-blue/60 rounded"
+        >
           Portfolio
-        </h2>
+        </button>
       </div>
       <div className="flex-1 overflow-y-auto">
         <FileTree
