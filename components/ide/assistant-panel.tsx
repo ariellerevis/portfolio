@@ -132,7 +132,7 @@ export function AssistantPanel({ isOpen, onClose, onOpen }: AssistantPanelProps)
     return (
       <button
         onClick={handleOpen}
-        className="fixed bottom-5 right-5 z-50 flex h-14 w-14 items-center justify-center rounded-full border border-accent-blue/70 bg-accent-blue-soft text-accent-blue shadow-[0_16px_44px_rgba(0,0,0,0.35)] ring-1 ring-accent-blue/25 transition-all hover:-translate-y-0.5 hover:border-accent-blue hover:text-accent-blue-bright focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-blue/70"
+        className="fixed bottom-20 right-5 z-50 flex h-14 w-14 items-center justify-center rounded-full border border-accent-blue/70 bg-panel text-accent-blue shadow-[0_16px_44px_rgba(0,0,0,0.42)] ring-1 ring-accent-blue/25 transition-all hover:-translate-y-0.5 hover:border-accent-blue hover:text-accent-blue-bright focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-blue/70"
         aria-label="Open assistant"
       >
         <MessageCircle className="w-6 h-6" />

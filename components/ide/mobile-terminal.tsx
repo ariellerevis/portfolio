@@ -1,8 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback, KeyboardEvent } from "react";
-import { X, Terminal as TerminalIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { ChevronDown, X, Terminal as TerminalIcon } from "lucide-react";
 import { virtualFileSystem, type FileSystemNode } from "./terminal";
 
 // Terminal history entry type
@@ -277,25 +276,22 @@ export function MobileTerminalSheet({
   }, [processCommand]);
   
   const currentPathStr = pathToString(currentPath);
+
+  if (!sheetIsOpen) {
+    return null;
+  }
   
   return (
     <>
       {/* Backdrop */}
       <div
-        className={cn(
-          "fixed inset-0 bg-black/60 z-40 lg:hidden transition-opacity",
-          sheetIsOpen ? "opacity-100" : "opacity-0 pointer-events-none"
-        )}
+        className="fixed inset-0 bg-black/60 z-40 lg:hidden transition-opacity opacity-100"
         onClick={handleClose}
       />
       
       {/* Sheet */}
       <div
-        className={cn(
-          "fixed inset-x-0 bottom-0 z-50 lg:hidden transition-transform duration-200 flex flex-col",
-          "bg-terminal rounded-t-2xl max-h-[85vh]",
-          sheetIsOpen ? "translate-y-0" : "translate-y-full"
-        )}
+        className="fixed inset-x-0 bottom-0 z-50 lg:hidden transition-transform duration-200 flex flex-col bg-terminal rounded-t-2xl max-h-[85vh] translate-y-0"
         role="dialog"
         aria-label="Portfolio terminal"
       >
@@ -306,9 +302,18 @@ export function MobileTerminalSheet({
         
         {/* Header */}
         <div className="flex items-center justify-between px-4 py-2 border-b border-terminal-border">
-          <div className="flex items-center gap-2">
-            <TerminalIcon className="w-4 h-4 text-terminal-accent" />
-            <span className="text-sm font-medium text-terminal-text uppercase tracking-wider">Terminal</span>
+          <div>
+            <div className="flex items-center gap-2">
+              <TerminalIcon className="w-4 h-4 text-terminal-accent" />
+              <span className="text-sm font-medium text-terminal-text uppercase tracking-wider">Terminal</span>
+            </div>
+            <button
+              onClick={handleClose}
+              className="mt-2 inline-flex items-center gap-2 rounded-md border border-terminal-accent/25 bg-terminal-accent/10 px-2 py-1.5 font-mono text-xs text-terminal-accent transition-colors hover:border-terminal-accent/45 hover:text-accent-blue-bright focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-terminal-accent/60"
+            >
+              <span>navigate using terminal</span>
+              <ChevronDown className="h-3.5 w-3.5" />
+            </button>
           </div>
           <button
             onClick={handleClose}

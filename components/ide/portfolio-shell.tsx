@@ -82,12 +82,20 @@ export function PortfolioShell() {
   }, []);
 
   const handleIconClick = useCallback((icon: string) => {
+    if (icon === "explorer") {
+      setExplorerCollapsed((current) => {
+        const nextCollapsed = !current;
+        setActiveIcon(nextCollapsed ? activeSection : "explorer");
+        return nextCollapsed;
+      });
+      return;
+    }
+
     setActiveIcon(icon);
 
     if (icon === "about" || icon === "profile") {
       setActiveSection("about");
       setActiveFile("about");
-      setExplorerCollapsed(false);
       return;
     }
 
@@ -100,15 +108,32 @@ export function PortfolioShell() {
       setActiveSection(sectionByFile[icon]);
       setActiveFile(icon);
     }
+  }, [activeSection]);
+
+  const toggleExplorer = useCallback(() => {
+    setExplorerCollapsed((current) => {
+      const nextCollapsed = !current;
+      setActiveIcon(nextCollapsed ? activeSection : "explorer");
+      return nextCollapsed;
+    });
+  }, [activeSection]);
+
+  const toggleAssistant = useCallback(() => {
+    setAssistantOpen((current) => !current);
+    setMobileAssistantOpen((current) => !current);
   }, []);
 
-  const openAssistant = useCallback(() => {
-    setAssistantOpen(true);
-    setMobileAssistantOpen(true);
+  const closeAssistant = useCallback(() => {
+    setAssistantOpen(false);
+    setMobileAssistantOpen(false);
   }, []);
 
-  const openTerminal = useCallback(() => {
-    setMobileTerminalOpen(true);
+  const toggleTerminal = useCallback(() => {
+    setMobileTerminalOpen((current) => !current);
+
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new CustomEvent("portfolio:toggle-terminal"));
+    }
   }, []);
 
   return (
@@ -136,8 +161,9 @@ export function PortfolioShell() {
         <MainWorkspace
           activeSection={activeSection}
           onNavigate={navigateToSection}
-          onOpenAssistant={openAssistant}
-          onOpenTerminal={openTerminal}
+          onToggleExplorer={toggleExplorer}
+          onToggleAssistant={toggleAssistant}
+          onToggleTerminal={toggleTerminal}
         />
         <div className="hidden lg:block">
           <Terminal
@@ -152,16 +178,19 @@ export function PortfolioShell() {
 
       <div className="hidden lg:flex">
         <AssistantPanel
-          isOpen={assistantOpen}
-          onOpen={() => setAssistantOpen(true)}
-          onClose={() => setAssistantOpen(false)}
+          isOpen={assistantOpen || mobileAssistantOpen}
+          onOpen={() => {
+            setAssistantOpen(true);
+            setMobileAssistantOpen(true);
+          }}
+          onClose={closeAssistant}
         />
       </div>
 
       {!mobileAssistantOpen && (
         <button
           onClick={() => setMobileAssistantOpen(true)}
-          className="fixed bottom-5 right-5 z-50 flex h-14 w-14 items-center justify-center rounded-full border border-accent-blue/70 bg-accent-blue-soft text-accent-blue shadow-[0_16px_44px_rgba(0,0,0,0.35)] ring-1 ring-accent-blue/25 transition-all hover:-translate-y-0.5 hover:border-accent-blue hover:text-accent-blue-bright focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-blue/70 lg:hidden"
+          className="fixed bottom-20 right-5 z-50 flex h-14 w-14 items-center justify-center rounded-full border border-accent-blue/70 bg-panel text-accent-blue shadow-[0_16px_44px_rgba(0,0,0,0.42)] ring-1 ring-accent-blue/25 transition-all hover:-translate-y-0.5 hover:border-accent-blue hover:text-accent-blue-bright focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-blue/70 lg:hidden"
           aria-label="Open assistant"
         >
           <MessageCircle className="h-6 w-6" />
@@ -170,9 +199,9 @@ export function PortfolioShell() {
 
       <MobileAssistantSheet
         isOpen={mobileAssistantOpen}
-        onClose={() => setMobileAssistantOpen(false)}
+        onClose={closeAssistant}
       >
-        <MobileAssistantContent onClose={() => setMobileAssistantOpen(false)} />
+        <MobileAssistantContent onClose={closeAssistant} />
       </MobileAssistantSheet>
 
       <MobileTerminalSheet
