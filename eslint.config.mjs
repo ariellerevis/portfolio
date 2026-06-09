@@ -4,9 +4,11 @@ import nextVitals from "eslint-config-next/core-web-vitals";
 export default defineConfig([
   ...nextVitals,
   globalIgnores([
-    ".next/**",
-    "node_modules/**",
-    "out/**",
+      ".next/**",
+      ".screenshots/**",
+      ".tmp/**",
+      "node_modules/**",
+      "out/**",
     "next-env.d.ts",
   ]),
 ]);

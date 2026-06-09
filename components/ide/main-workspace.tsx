@@ -1,13 +1,20 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState, type CSSProperties, type PointerEvent } from "react";
 import { ArrowLeft, ArrowRight, ChevronDown, Sparkles, ExternalLink } from "lucide-react";
 
 interface MainWorkspaceProps {
   activeSection: string;
   onNavigate: (section: string) => void;
-  onOpenAssistant: () => void;
-  onOpenTerminal?: () => void;
+  onToggleExplorer: () => void;
+  onToggleAssistant: () => void;
+  onToggleTerminal: () => void;
+}
+
+interface DotRipple {
+  id: number;
+  x: number;
+  y: number;
 }
 
 const typewriterPhrases = [
@@ -52,17 +59,18 @@ function useLoopingTypewriter(phrases: string[]) {
 export function MainWorkspace({
   activeSection,
   onNavigate,
-  onOpenAssistant,
-  onOpenTerminal,
+  onToggleExplorer,
+  onToggleAssistant,
+  onToggleTerminal,
 }: MainWorkspaceProps) {
   return (
     <div className="flex-1 bg-workspace overflow-y-auto">
       <div className="min-h-full flex flex-col">
         {(activeSection === "home" || activeSection === "about") && (
           <HomeSection
-            onNavigate={onNavigate}
-            onOpenAssistant={onOpenAssistant}
-            onOpenTerminal={onOpenTerminal}
+            onToggleExplorer={onToggleExplorer}
+            onToggleAssistant={onToggleAssistant}
+            onToggleTerminal={onToggleTerminal}
           />
         )}
         {activeSection === "projects" && <ProjectsSection />}
@@ -75,35 +83,62 @@ export function MainWorkspace({
 }
 
 function HomeSection({
-  onNavigate,
-  onOpenAssistant,
-  onOpenTerminal,
+  onToggleExplorer,
+  onToggleAssistant,
+  onToggleTerminal,
 }: {
-  onNavigate: (section: string) => void;
-  onOpenAssistant: () => void;
-  onOpenTerminal?: () => void;
+  onToggleExplorer: () => void;
+  onToggleAssistant: () => void;
+  onToggleTerminal: () => void;
 }) {
   const typedText = useLoopingTypewriter(typewriterPhrases);
+  const [ripples, setRipples] = useState<DotRipple[]>([]);
+  const nextRippleIdRef = useRef(0);
 
-  const handleOpenTerminal = () => {
-    onOpenTerminal?.();
-    if (typeof window !== "undefined") {
-      window.dispatchEvent(new CustomEvent("portfolio:open-terminal"));
-    }
+  const handleDotsPointerMove = (event: PointerEvent<HTMLElement>) => {
+    const bounds = event.currentTarget.getBoundingClientRect();
+    event.currentTarget.style.setProperty("--dots-x", `${event.clientX - bounds.left}px`);
+    event.currentTarget.style.setProperty("--dots-y", `${event.clientY - bounds.top}px`);
+  };
+
+  const handleDotsPointerDown = (event: PointerEvent<HTMLElement>) => {
+    const bounds = event.currentTarget.getBoundingClientRect();
+    nextRippleIdRef.current += 1;
+    const id = nextRippleIdRef.current;
+    const nextRipple = {
+      id,
+      x: event.clientX - bounds.left,
+      y: event.clientY - bounds.top,
+    };
+
+    setRipples((current) => [...current, nextRipple].slice(-4));
+    window.setTimeout(() => {
+      setRipples((current) => current.filter((ripple) => ripple.id !== id));
+    }, 720);
   };
 
   return (
     <div className="flex-1 px-4 py-10 sm:p-8 md:p-12">
       <section className="min-h-[calc(100vh-7rem)] max-w-5xl mx-auto flex flex-col justify-center">
-        <div className="text-center max-w-4xl mx-auto">
+        <div
+          className="portfolio-dots relative overflow-hidden rounded-lg border border-border/60 px-4 py-8 text-center shadow-[0_18px_80px_rgba(0,0,0,0.18)] sm:px-8 sm:py-10 md:px-12"
+          onPointerMove={handleDotsPointerMove}
+          onPointerDown={handleDotsPointerDown}
+          style={{ "--dots-x": "50%", "--dots-y": "50%" } as CSSProperties}
+        >
+          {ripples.map((ripple) => (
+            <span
+              key={ripple.id}
+              className="dot-ripple"
+              style={{ left: ripple.x, top: ripple.y }}
+              aria-hidden="true"
+            />
+          ))}
+          <div className="relative z-10 mx-auto max-w-4xl">
           <div className="font-mono text-xs text-muted-foreground mb-4">~/portfolio/about.md</div>
           <h1 className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-bold tracking-tight mb-6 leading-none">
             <span className="text-accent-blue">~/</span>
             <span className="text-foreground">arielle</span>
-            <span
-              className="inline-block h-[0.8em] max-h-14 w-[0.08em] min-w-1 bg-accent-blue ml-2 align-middle animate-blink sm:max-h-20 lg:max-h-24"
-              aria-hidden="true"
-            />
           </h1>
           <p className="font-mono text-base sm:text-lg md:text-xl text-muted-foreground">
             <span className="text-muted-foreground/60">{`/*`}</span>
@@ -119,11 +154,12 @@ function HomeSection({
             <span className="text-muted-foreground">{`"`}</span>
             <span className="ml-1 inline-block h-4 w-2 bg-accent-blue animate-blink" aria-hidden="true" />
           </div>
+          </div>
         </div>
 
         <div className="mt-10 grid grid-cols-1 gap-4 text-accent-blue font-mono text-sm md:text-base sm:grid-cols-2">
           <button
-            onClick={() => onNavigate("projects")}
+            onClick={onToggleExplorer}
             className="flex items-center justify-center gap-2 rounded-lg border border-transparent px-3 py-2 hover:border-accent-blue/30 hover:bg-accent-blue-soft hover:text-accent-blue-bright transition-colors group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-blue/60"
           >
             <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
@@ -131,7 +167,7 @@ function HomeSection({
           </button>
 
           <button
-            onClick={onOpenAssistant}
+            onClick={onToggleAssistant}
             className="flex items-center justify-center gap-2 rounded-lg border border-transparent px-3 py-2 hover:border-accent-blue/30 hover:bg-accent-blue-soft hover:text-accent-blue-bright transition-colors group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-blue/60"
           >
             <span>ask questions</span>
@@ -139,7 +175,7 @@ function HomeSection({
           </button>
 
           <button
-            onClick={handleOpenTerminal}
+            onClick={onToggleTerminal}
             className="flex items-center justify-center gap-2 rounded-lg border border-transparent px-3 py-2 hover:border-accent-blue/30 hover:bg-accent-blue-soft hover:text-accent-blue-bright transition-colors group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-blue/60 sm:col-span-2"
           >
             <span>navigate using terminal</span>

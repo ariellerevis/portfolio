@@ -69,18 +69,6 @@ export function ActivityBar({ activeIcon, onIconClick }: ActivityBarProps) {
     };
   }, [isSearchOpen]);
 
-  const emitExplorerToggle = () => {
-    if (typeof window !== "undefined") {
-      window.dispatchEvent(new CustomEvent("portfolio:toggle-explorer"));
-    }
-  };
-
-  const emitExplorerOpen = () => {
-    if (typeof window !== "undefined") {
-      window.dispatchEvent(new CustomEvent("portfolio:open-explorer"));
-    }
-  };
-
   const handleSearchSelect = (item: SearchItem) => {
     setIsSearchOpen(false);
 
@@ -91,10 +79,6 @@ export function ActivityBar({ activeIcon, onIconClick }: ActivityBarProps) {
 
     const route = item.route;
     if (!route) return;
-
-    if (route === "about") {
-      emitExplorerOpen();
-    }
 
     onIconClick(route);
   };
@@ -112,10 +96,7 @@ export function ActivityBar({ activeIcon, onIconClick }: ActivityBarProps) {
     <div className="relative w-14 bg-activity-bar flex flex-col items-center py-2 border-r border-border">
       <div className="flex flex-col gap-1 flex-1">
         <button
-          onClick={() => {
-            emitExplorerToggle();
-            onIconClick("explorer");
-          }}
+          onClick={() => onIconClick("explorer")}
           className={buttonClass(activeIcon === "explorer")}
           aria-label="Toggle explorer"
           aria-pressed={activeIcon === "explorer"}
@@ -151,11 +132,10 @@ export function ActivityBar({ activeIcon, onIconClick }: ActivityBarProps) {
       <div className="flex flex-col gap-1">
         <button
           onClick={() => {
-            emitExplorerOpen();
-            onIconClick("about");
+            onIconClick("contact");
           }}
-          className={buttonClass(activeIcon === "about" || activeIcon === "profile")}
-          aria-label="Open about page"
+          className={buttonClass(activeIcon === "contact" || activeIcon === "profile")}
+          aria-label="Open contact page"
         >
           <User className="w-5 h-5" />
         </button>

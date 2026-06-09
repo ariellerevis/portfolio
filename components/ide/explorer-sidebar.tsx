@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { ArrowLeft } from "lucide-react";
 import { FileTree, type FileItem } from "./file-tree";
 
 interface ExplorerSidebarProps {
@@ -104,6 +105,13 @@ export function ExplorerSidebar({
           className="text-xs font-semibold uppercase tracking-wider text-accent-blue hover:text-accent-blue-bright transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-blue/60 rounded"
         >
           Portfolio
+        </button>
+        <button
+          onClick={() => onCollapsedChange?.(true)}
+          className="mt-3 flex items-center gap-2 rounded-md border border-accent-blue/25 bg-accent-blue-soft px-2 py-1.5 font-mono text-xs text-accent-blue transition-colors hover:border-accent-blue/45 hover:text-accent-blue-bright focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-blue/60 lg:hidden"
+        >
+          <ArrowLeft className="h-3.5 w-3.5" />
+          <span>explore folders</span>
         </button>
       </div>
       <div className="flex-1 overflow-y-auto">

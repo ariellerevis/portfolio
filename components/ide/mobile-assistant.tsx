@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { X, Send, Sparkles } from "lucide-react";
+import { ArrowRight, X, Send, Sparkles } from "lucide-react";
 
 interface Message {
   id: string;
@@ -119,6 +119,13 @@ export function MobileAssistantContent({ onClose }: MobileAssistantContentProps)
           <p className="text-sm text-muted-foreground mt-1">
             Ask me about her projects, experience, or skills.
           </p>
+          <button
+            onClick={onClose}
+            className="mt-3 inline-flex items-center gap-2 rounded-md border border-accent-blue/25 bg-accent-blue-soft px-2 py-1.5 font-mono text-xs text-accent-blue transition-colors hover:border-accent-blue/45 hover:text-accent-blue-bright focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-blue/60"
+          >
+            <span>ask questions</span>
+            <ArrowRight className="h-3.5 w-3.5" />
+          </button>
         </div>
         <button
           onClick={onClose}

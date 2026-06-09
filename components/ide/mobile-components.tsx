@@ -84,23 +84,21 @@ interface MobileAssistantSheetProps {
 }
 
 export function MobileAssistantSheet({ isOpen, onClose, children }: MobileAssistantSheetProps) {
+  if (!isOpen) {
+    return null;
+  }
+
   return (
     <>
       {/* Backdrop */}
       <div
-        className={cn(
-          "fixed inset-0 bg-black/60 z-40 lg:hidden transition-opacity",
-          isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
-        )}
+        className="fixed inset-0 bg-black/60 z-40 lg:hidden transition-opacity opacity-100"
         onClick={onClose}
       />
       
       {/* Sheet */}
       <div
-        className={cn(
-          "fixed inset-x-0 bottom-0 top-14 bg-panel border-t border-border z-50 lg:hidden transition-transform duration-200 flex flex-col",
-          isOpen ? "translate-y-0" : "translate-y-full"
-        )}
+        className="fixed inset-x-0 bottom-0 top-14 bg-panel border-t border-border z-50 lg:hidden transition-transform duration-200 flex flex-col translate-y-0"
       >
         {children}
       </div>
