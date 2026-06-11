@@ -65,13 +65,11 @@ function getResponse(question: string): string {
 }
 
 export function AssistantPanel({ isOpen, onClose, onOpen }: AssistantPanelProps) {
-  const [internalOpen, setInternalOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const nextMessageIdRef = useRef(0);
-  const panelIsOpen = isOpen || internalOpen;
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -119,16 +117,14 @@ export function AssistantPanel({ isOpen, onClose, onOpen }: AssistantPanelProps)
   };
 
   const handleOpen = () => {
-    setInternalOpen(true);
     onOpen?.();
   };
 
   const handleClose = () => {
-    setInternalOpen(false);
     onClose();
   };
 
-  if (!panelIsOpen) {
+  if (!isOpen) {
     return (
       <button
         onClick={handleOpen}

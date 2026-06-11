@@ -132,7 +132,7 @@ function TreeNode({ item, depth, activeFile, onFileClick, openFolders, toggleFol
 }
 
 export function FileTree({ items, activeFile, onFileClick }: FileTreeProps) {
-  const [openFolders, setOpenFolders] = useState<Set<string>>(new Set(["projects", "experience", "skills"]));
+  const [openFolders, setOpenFolders] = useState<Set<string>>(new Set());
 
   const toggleFolder = (folderId: string) => {
     setOpenFolders((prev) => {

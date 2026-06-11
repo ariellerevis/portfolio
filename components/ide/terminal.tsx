@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback, KeyboardEvent } from "react";
-import { Minus, Square, X, ChevronUp, ChevronDown } from "lucide-react";
+import { Minus, Square, ChevronUp, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 // Virtual File System Structure
@@ -77,6 +77,8 @@ interface TerminalProps {
   onNavigate: (route: string) => void;
   onOpenFile: (fileId: string) => void;
   className?: string;
+  isMinimized?: boolean;
+  onMinimizedChange?: (isMinimized: boolean) => void;
 }
 
 // Utility functions for file system navigation
@@ -140,7 +142,9 @@ export function Terminal({
   onPathChange, 
   onNavigate, 
   onOpenFile,
-  className 
+  className,
+  isMinimized: controlledMinimized,
+  onMinimizedChange,
 }: TerminalProps) {
   const [history, setHistory] = useState<HistoryEntry[]>([
     { type: "system", content: "Arielle Portfolio Terminal" },
@@ -151,10 +155,22 @@ export function Terminal({
   const [commandHistory, setCommandHistory] = useState<string[]>([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
   const [isExpanded, setIsExpanded] = useState(false);
-  const [isMinimized, setIsMinimized] = useState(true);
+  const [internalMinimized, setInternalMinimized] = useState(true);
+  const isMinimized = controlledMinimized ?? internalMinimized;
   
   const inputRef = useRef<HTMLInputElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const setMinimized = useCallback((nextValue: boolean | ((current: boolean) => boolean)) => {
+    const currentValue = controlledMinimized ?? internalMinimized;
+    const nextMinimized =
+      typeof nextValue === "function" ? nextValue(currentValue) : nextValue;
+
+    if (controlledMinimized === undefined) {
+      setInternalMinimized(nextMinimized);
+    }
+
+    onMinimizedChange?.(nextMinimized);
+  }, [controlledMinimized, internalMinimized, onMinimizedChange]);
   
   // Auto-scroll to bottom when history changes
   useEffect(() => {
@@ -164,8 +180,8 @@ export function Terminal({
   }, [history]);
 
   useEffect(() => {
-    const handleOpen = () => setIsMinimized(false);
-    const handleToggle = () => setIsMinimized((current) => !current);
+    const handleOpen = () => setMinimized(false);
+    const handleToggle = () => setMinimized((current) => !current);
 
     window.addEventListener("portfolio:open-terminal", handleOpen);
     window.addEventListener("portfolio:toggle-terminal", handleToggle);
@@ -174,7 +190,7 @@ export function Terminal({
       window.removeEventListener("portfolio:open-terminal", handleOpen);
       window.removeEventListener("portfolio:toggle-terminal", handleToggle);
     };
-  }, []);
+  }, [setMinimized]);
   
   // Focus input when terminal is clicked
   const handleTerminalClick = useCallback(() => {
@@ -395,7 +411,7 @@ export function Terminal({
           <span className="text-xs font-medium text-terminal-muted uppercase tracking-wider">Terminal</span>
           <div className="flex items-center gap-1">
             <button
-              onClick={() => setIsMinimized(false)}
+              onClick={() => setMinimized(false)}
               className="p-1 hover:bg-white/10 rounded transition-colors"
               aria-label="Restore terminal"
             >
@@ -423,7 +439,7 @@ export function Terminal({
         <span className="text-xs font-medium text-terminal-muted uppercase tracking-wider">Terminal</span>
         <div className="flex items-center gap-1">
           <button
-            onClick={(e) => { e.stopPropagation(); setIsMinimized(true); }}
+            onClick={(e) => { e.stopPropagation(); setMinimized(true); }}
             className="p-1 hover:bg-white/10 rounded transition-colors"
             aria-label="Minimize terminal"
           >
