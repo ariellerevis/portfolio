@@ -50,6 +50,7 @@ export function PortfolioShell() {
   const [explorerCollapsed, setExplorerCollapsed] = useState(true);
   const [assistantOpen, setAssistantOpen] = useState(false);
   const [mobileAssistantOpen, setMobileAssistantOpen] = useState(false);
+  const [terminalMinimized, setTerminalMinimized] = useState(true);
   const [mobileTerminalOpen, setMobileTerminalOpen] = useState(false);
 
   const activePath = useMemo(() => {
@@ -118,10 +119,15 @@ export function PortfolioShell() {
     });
   }, [activeSection]);
 
+  const isAssistantVisible = assistantOpen || mobileAssistantOpen;
+  const isTerminalVisible = !terminalMinimized || mobileTerminalOpen;
+
   const toggleAssistant = useCallback(() => {
-    setAssistantOpen((current) => !current);
-    setMobileAssistantOpen((current) => !current);
-  }, []);
+    const nextOpen = !isAssistantVisible;
+
+    setAssistantOpen(nextOpen);
+    setMobileAssistantOpen(nextOpen);
+  }, [isAssistantVisible]);
 
   const closeAssistant = useCallback(() => {
     setAssistantOpen(false);
@@ -129,12 +135,11 @@ export function PortfolioShell() {
   }, []);
 
   const toggleTerminal = useCallback(() => {
-    setMobileTerminalOpen((current) => !current);
+    const nextOpen = !isTerminalVisible;
 
-    if (typeof window !== "undefined") {
-      window.dispatchEvent(new CustomEvent("portfolio:toggle-terminal"));
-    }
-  }, []);
+    setTerminalMinimized(!nextOpen);
+    setMobileTerminalOpen(nextOpen);
+  }, [isTerminalVisible]);
 
   return (
     <div className="flex h-screen overflow-hidden bg-workspace text-foreground">
@@ -164,6 +169,9 @@ export function PortfolioShell() {
           onToggleExplorer={toggleExplorer}
           onToggleAssistant={toggleAssistant}
           onToggleTerminal={toggleTerminal}
+          isExplorerOpen={!explorerCollapsed}
+          isAssistantOpen={isAssistantVisible}
+          isTerminalOpen={isTerminalVisible}
         />
         <div className="hidden lg:block">
           <Terminal
@@ -171,6 +179,13 @@ export function PortfolioShell() {
             onPathChange={setCurrentPath}
             onNavigate={navigateToSection}
             onOpenFile={handleFileClick}
+            isMinimized={terminalMinimized}
+            onMinimizedChange={(nextMinimized) => {
+              setTerminalMinimized(nextMinimized);
+              if (nextMinimized) {
+                setMobileTerminalOpen(false);
+              }
+            }}
           />
         </div>
         <StatusBar activeSection={activeSection} activePath={activePath} />
@@ -206,7 +221,10 @@ export function PortfolioShell() {
 
       <MobileTerminalSheet
         isOpen={mobileTerminalOpen}
-        onClose={() => setMobileTerminalOpen(false)}
+        onClose={() => {
+          setMobileTerminalOpen(false);
+          setTerminalMinimized(true);
+        }}
         currentPath={currentPath}
         onPathChange={setCurrentPath}
         onNavigate={navigateToSection}

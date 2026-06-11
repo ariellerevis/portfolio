@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ArrowLeft, ArrowRight, ChevronDown, Sparkles, ExternalLink } from "lucide-react";
+import { ArrowLeft, ArrowRight, ChevronDown, ChevronUp, Sparkles, ExternalLink } from "lucide-react";
 import InteractiveDots from "@/components/ui/dots-pattern";
 
 interface MainWorkspaceProps {
@@ -10,6 +10,9 @@ interface MainWorkspaceProps {
   onToggleExplorer: () => void;
   onToggleAssistant: () => void;
   onToggleTerminal: () => void;
+  isExplorerOpen: boolean;
+  isAssistantOpen: boolean;
+  isTerminalOpen: boolean;
 }
 
 const typewriterPhrases = [
@@ -57,6 +60,9 @@ export function MainWorkspace({
   onToggleExplorer,
   onToggleAssistant,
   onToggleTerminal,
+  isExplorerOpen,
+  isAssistantOpen,
+  isTerminalOpen,
 }: MainWorkspaceProps) {
   return (
     <div className="flex-1 bg-workspace overflow-y-auto">
@@ -66,6 +72,9 @@ export function MainWorkspace({
             onToggleExplorer={onToggleExplorer}
             onToggleAssistant={onToggleAssistant}
             onToggleTerminal={onToggleTerminal}
+            isExplorerOpen={isExplorerOpen}
+            isAssistantOpen={isAssistantOpen}
+            isTerminalOpen={isTerminalOpen}
           />
         )}
         {activeSection === "projects" && <ProjectsSection />}
@@ -81,12 +90,24 @@ function HomeSection({
   onToggleExplorer,
   onToggleAssistant,
   onToggleTerminal,
+  isExplorerOpen,
+  isAssistantOpen,
+  isTerminalOpen,
 }: {
   onToggleExplorer: () => void;
   onToggleAssistant: () => void;
   onToggleTerminal: () => void;
+  isExplorerOpen: boolean;
+  isAssistantOpen: boolean;
+  isTerminalOpen: boolean;
 }) {
   const typedText = useLoopingTypewriter(typewriterPhrases);
+  const promptBaseClass =
+    "flex items-center justify-center gap-2 rounded-lg border px-3 py-2 transition-colors group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-blue/60";
+  const promptIdleClass =
+    "border-transparent hover:border-accent-blue/30 hover:bg-accent-blue-soft hover:text-accent-blue-bright";
+  const promptActiveClass =
+    "border-accent-blue/35 bg-accent-blue-soft text-accent-blue-bright";
 
   return (
     <div className="relative flex-1 overflow-hidden bg-workspace px-4 py-10 sm:p-8 md:p-12">
@@ -100,8 +121,8 @@ function HomeSection({
       />
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_18%,rgba(74,168,255,0.08),transparent_32rem),linear-gradient(180deg,rgba(17,20,26,0.12),rgba(17,20,26,0.72))]" />
       <section className="relative z-10 min-h-[calc(100vh-7rem)] max-w-5xl mx-auto flex flex-col justify-center">
-        <div className="relative overflow-hidden rounded-lg border border-border/70 bg-workspace/45 px-4 py-8 text-center shadow-[0_18px_80px_rgba(0,0,0,0.22)] backdrop-blur-[1px] sm:px-8 sm:py-10 md:px-12">
-          <div className="relative z-10 mx-auto max-w-4xl">
+        <div className="px-2 py-8 text-center sm:px-6 sm:py-10 md:px-10">
+          <div className="mx-auto max-w-4xl">
             <div className="font-mono text-xs text-muted-foreground mb-4">~/portfolio/about.md</div>
             <h1 className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-bold tracking-tight mb-6 leading-none">
               <span className="text-accent-blue">~/</span>
@@ -113,7 +134,7 @@ function HomeSection({
               <span className="text-muted-foreground/60">{`*/`}</span>
             </p>
             <div
-              className="mt-6 inline-flex max-w-full items-center rounded-lg border border-border bg-elevated/70 px-3 py-2 font-mono text-sm text-foreground shadow-[0_0_0_1px_rgba(255,255,255,0.02)]"
+              className="mt-6 inline-flex max-w-full items-center font-mono text-sm text-foreground"
               aria-label={`Currently focused on ${typedText || typewriterPhrases[0]}`}
             >
               <span className="text-muted-foreground">{`const focus = "`}</span>
@@ -127,26 +148,41 @@ function HomeSection({
         <div className="mt-10 grid grid-cols-1 gap-4 text-accent-blue font-mono text-sm md:text-base sm:grid-cols-2">
           <button
             onClick={onToggleExplorer}
-            className="flex items-center justify-center gap-2 rounded-lg border border-transparent px-3 py-2 hover:border-accent-blue/30 hover:bg-accent-blue-soft hover:text-accent-blue-bright transition-colors group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-blue/60"
+            className={`${promptBaseClass} ${isExplorerOpen ? promptActiveClass : promptIdleClass}`}
+            aria-pressed={isExplorerOpen}
           >
-            <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
             <span>explore folders</span>
+            {isExplorerOpen ? (
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            ) : (
+              <ArrowLeft className="w-4 h-4 -order-1 group-hover:-translate-x-1 transition-transform" />
+            )}
           </button>
 
           <button
             onClick={onToggleAssistant}
-            className="flex items-center justify-center gap-2 rounded-lg border border-transparent px-3 py-2 hover:border-accent-blue/30 hover:bg-accent-blue-soft hover:text-accent-blue-bright transition-colors group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-blue/60"
+            className={`${promptBaseClass} ${isAssistantOpen ? promptActiveClass : promptIdleClass}`}
+            aria-pressed={isAssistantOpen}
           >
             <span>ask questions</span>
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            {isAssistantOpen ? (
+              <ArrowLeft className="w-4 h-4 -order-1 group-hover:-translate-x-1 transition-transform" />
+            ) : (
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            )}
           </button>
 
           <button
             onClick={onToggleTerminal}
-            className="flex items-center justify-center gap-2 rounded-lg border border-transparent px-3 py-2 hover:border-accent-blue/30 hover:bg-accent-blue-soft hover:text-accent-blue-bright transition-colors group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-blue/60 sm:col-span-2"
+            className={`${promptBaseClass} ${isTerminalOpen ? promptActiveClass : promptIdleClass} sm:col-span-2`}
+            aria-pressed={isTerminalOpen}
           >
             <span>navigate using terminal</span>
-            <ChevronDown className="w-4 h-4 group-hover:translate-y-1 transition-transform" />
+            {isTerminalOpen ? (
+              <ChevronUp className="w-4 h-4 -order-1 group-hover:-translate-y-1 transition-transform" />
+            ) : (
+              <ChevronDown className="w-4 h-4 group-hover:translate-y-1 transition-transform" />
+            )}
           </button>
         </div>
 

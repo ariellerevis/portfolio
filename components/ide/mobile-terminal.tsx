@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback, KeyboardEvent } from "react";
-import { ChevronDown, X, Terminal as TerminalIcon } from "lucide-react";
+import { ChevronUp, X, Terminal as TerminalIcon } from "lucide-react";
 import { virtualFileSystem, type FileSystemNode } from "./terminal";
 
 // Terminal history entry type
@@ -310,9 +310,10 @@ export function MobileTerminalSheet({
             <button
               onClick={handleClose}
               className="mt-2 inline-flex items-center gap-2 rounded-md border border-terminal-accent/25 bg-terminal-accent/10 px-2 py-1.5 font-mono text-xs text-terminal-accent transition-colors hover:border-terminal-accent/45 hover:text-accent-blue-bright focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-terminal-accent/60"
+              aria-pressed="true"
             >
+              <ChevronUp className="h-3.5 w-3.5" />
               <span>navigate using terminal</span>
-              <ChevronDown className="h-3.5 w-3.5" />
             </button>
           </div>
           <button

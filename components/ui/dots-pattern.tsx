@@ -52,9 +52,10 @@ export default function InteractiveDots({
   const ripples = useRef<Ripple[]>([]);
   const dotsRef = useRef<Dot[]>([]);
   const prefersReducedMotionRef = useRef(false);
+  const isCoarsePointerRef = useRef(false);
 
   const getMouseInfluence = useCallback((x: number, y: number) => {
-    if (!mouseRef.current.isInside) return 0;
+    if (!mouseRef.current.isInside || isCoarsePointerRef.current) return 0;
 
     const dx = x - mouseRef.current.x;
     const dy = y - mouseRef.current.y;
@@ -134,14 +135,18 @@ export default function InteractiveDots({
     initializeDots();
   }, [initializeDots]);
 
-  const handlePointerMove = useCallback((event: PointerEvent) => {
+  const updatePointerPosition = useCallback((event: PointerEvent) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
     const rect = canvas.getBoundingClientRect();
     mouseRef.current.x = event.clientX - rect.left;
     mouseRef.current.y = event.clientY - rect.top;
-    mouseRef.current.isInside = true;
+    mouseRef.current.isInside =
+      event.clientX >= rect.left &&
+      event.clientX <= rect.right &&
+      event.clientY >= rect.top &&
+      event.clientY <= rect.bottom;
   }, []);
 
   const handlePointerLeave = useCallback(() => {
@@ -158,7 +163,11 @@ export default function InteractiveDots({
     const y = event.clientY - rect.top;
 
     mouseRef.current.isDown = true;
-    mouseRef.current.isInside = true;
+    mouseRef.current.isInside =
+      event.clientX >= rect.left &&
+      event.clientX <= rect.right &&
+      event.clientY >= rect.top &&
+      event.clientY <= rect.bottom;
     mouseRef.current.x = x;
     mouseRef.current.y = y;
 
@@ -197,15 +206,22 @@ export default function InteractiveDots({
     dotsRef.current.forEach((dot) => {
       const mouseInfluence = getMouseInfluence(dot.originalX, dot.originalY);
       const rippleInfluence = getRippleInfluence(dot.originalX, dot.originalY, currentTime);
-      const totalInfluence = mouseInfluence + rippleInfluence;
+      const mobileFlow = isCoarsePointerRef.current && !prefersReducedMotionRef.current
+        ? Math.max(
+            0,
+            Math.sin(dot.originalX * 0.012 + timeRef.current * 2.1 + dot.phase) * 0.16 +
+              Math.cos((dot.originalY - dot.originalX) * 0.01 + timeRef.current * 1.45) * 0.14
+          )
+        : 0;
+      const totalInfluence = mouseInfluence + rippleInfluence + mobileFlow;
       const breathing = prefersReducedMotionRef.current
         ? 0
         : Math.sin(timeRef.current + dot.phase) * 0.45;
 
-      const dotSize = 1.55 + totalInfluence * 5.8 + breathing;
+      const dotSize = 1.45 + totalInfluence * 5.4 + breathing;
       const opacity = Math.max(
         0.18,
-        0.36 + totalInfluence * 0.42 + Math.abs(Math.sin(timeRef.current * 0.5 + dot.phase)) * 0.08
+        0.32 + totalInfluence * 0.36 + Math.abs(Math.sin(timeRef.current * 0.5 + dot.phase)) * 0.07
       );
 
       ctx.beginPath();
@@ -241,11 +257,16 @@ export default function InteractiveDots({
     if (!canvas) return;
 
     const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const coarsePointerQuery = window.matchMedia("(hover: none), (pointer: coarse)");
     const updateMotionPreference = () => {
       prefersReducedMotionRef.current = mediaQuery.matches;
     };
+    const updatePointerPreference = () => {
+      isCoarsePointerRef.current = coarsePointerQuery.matches;
+    };
 
     updateMotionPreference();
+    updatePointerPreference();
     resizeCanvas();
     animateRef.current = animate;
 
@@ -253,9 +274,10 @@ export default function InteractiveDots({
 
     resizeObserver.observe(canvas.parentElement ?? canvas);
     mediaQuery.addEventListener("change", updateMotionPreference);
-    canvas.addEventListener("pointermove", handlePointerMove);
-    canvas.addEventListener("pointerleave", handlePointerLeave);
-    canvas.addEventListener("pointerdown", handlePointerDown);
+    coarsePointerQuery.addEventListener("change", updatePointerPreference);
+    window.addEventListener("pointermove", updatePointerPosition);
+    window.addEventListener("pointerleave", handlePointerLeave);
+    window.addEventListener("pointerdown", handlePointerDown);
     window.addEventListener("pointerup", handlePointerUp);
 
     animate();
@@ -263,9 +285,10 @@ export default function InteractiveDots({
     return () => {
       resizeObserver.disconnect();
       mediaQuery.removeEventListener("change", updateMotionPreference);
-      canvas.removeEventListener("pointermove", handlePointerMove);
-      canvas.removeEventListener("pointerleave", handlePointerLeave);
-      canvas.removeEventListener("pointerdown", handlePointerDown);
+      coarsePointerQuery.removeEventListener("change", updatePointerPreference);
+      window.removeEventListener("pointermove", updatePointerPosition);
+      window.removeEventListener("pointerleave", handlePointerLeave);
+      window.removeEventListener("pointerdown", handlePointerDown);
       window.removeEventListener("pointerup", handlePointerUp);
 
       if (animationFrameId.current) {
@@ -277,10 +300,10 @@ export default function InteractiveDots({
       ripples.current = [];
       dotsRef.current = [];
     };
-  }, [animate, handlePointerDown, handlePointerLeave, handlePointerMove, handlePointerUp, resizeCanvas]);
+  }, [animate, handlePointerDown, handlePointerLeave, updatePointerPosition, handlePointerUp, resizeCanvas]);
 
   return (
-    <div className={`absolute inset-0 h-full w-full overflow-hidden ${className}`} style={{ backgroundColor }}>
+    <div className={`pointer-events-none absolute inset-0 h-full w-full overflow-hidden ${className}`} style={{ backgroundColor }}>
       <canvas ref={canvasRef} className="block h-full w-full" aria-hidden="true" />
     </div>
   );
