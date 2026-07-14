@@ -321,7 +321,7 @@ export async function POST(request: Request) {
       );
     }
 
-    console.error("Resume assistant request failed:", error);
+    console.error("Ask Arielle AI request failed:", error);
 
     return quotaFallback(
       "The resume RAG assistant is temporarily unavailable. You can still use the preanswered resume questions below without any models.",

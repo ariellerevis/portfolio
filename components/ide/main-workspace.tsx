@@ -552,7 +552,7 @@ function ContactSection() {
       <div className="space-y-6">
         <p className="text-muted-foreground leading-relaxed">
           Arielle is based around NJ, NY, and Miami. The best ways to reach her are email,
-          LinkedIn, and her portfolio site.
+          LinkedIn, and her portfolio repo.
         </p>
         <div className="space-y-4">
           <a 
@@ -569,7 +569,7 @@ function ContactSection() {
             <ExternalLink className="w-4 h-4 text-muted-foreground ml-auto" />
           </a>
           <a
-            href="https://revisa1.github.io"
+            href="https://github.com/ariellerevis/portfolio"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-3 p-4 bg-elevated rounded-lg border border-border hover:border-accent-blue/30 transition-colors group"
@@ -578,8 +578,8 @@ function ContactSection() {
               <span className="text-accent-blue font-mono">www</span>
             </div>
             <div>
-              <div className="text-foreground font-medium group-hover:text-accent-blue transition-colors">Portfolio</div>
-              <div className="text-sm text-muted-foreground">revisa1.github.io</div>
+              <div className="text-foreground font-medium group-hover:text-accent-blue transition-colors">Portfolio Repo</div>
+              <div className="text-sm text-muted-foreground">ariellerevis/portfolio</div>
             </div>
             <ExternalLink className="w-4 h-4 text-muted-foreground ml-auto" />
           </a>

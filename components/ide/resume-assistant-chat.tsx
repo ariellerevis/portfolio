@@ -149,11 +149,11 @@ export function ResumeAssistantChat({ onClose, variant }: ResumeAssistantChatPro
       <div className="flex flex-shrink-0 items-start justify-between border-b border-border p-4">
         <div>
           <h2 className={cn("font-bold", isMobile ? "text-xl" : "text-2xl")}>
-            <span className="text-accent-blue">Resume</span>
-            <span className="text-foreground"> assistant</span>
+            <span className="text-accent-blue">Ask Arielle</span>
+            <span className="text-foreground"> AI</span>
           </h2>
           <p className="mt-1 text-sm text-muted-foreground">
-            Ask about Arielle&apos;s resume. LinkedIn and GitHub are not indexed yet.
+            Uses RAG to retrieve relevant resume context before answering.
           </p>
           {isMobile && (
             <button

@@ -9,7 +9,7 @@ interface ActivityBarProps {
   onIconClick: (icon: string) => void;
 }
 
-const portfolioUrl = "https://revisa1.github.io";
+const portfolioUrl = "https://github.com/ariellerevis/portfolio";
 const linkedInUrl = "https://www.linkedin.com/in/arielle-revis/";
 const resumeUrl = "/Arielle-Revis-Resume.pdf";
 
@@ -37,7 +37,7 @@ const searchItems: SearchItem[] = [
   { id: "stack", title: "Libraries & Cloud", path: "~/portfolio/skills/stack.ts", route: "skill-engineering", keywords: "React Node.js AWS Azure Vercel" },
   { id: "interests", title: "Interests", path: "~/portfolio/skills/interests.md", route: "interests", keywords: "AI Skiing Reading Marvel Weightlifting Game of Thrones Crocheting" },
   { id: "contact", title: "Contact", path: "~/portfolio/contact.md", route: "contact", keywords: "email arielle.a.revis@gmail.com NJ NY Miami LinkedIn" },
-  { id: "portfolio", title: "Portfolio", path: "revisa1.github.io", href: portfolioUrl },
+  { id: "portfolio", title: "Portfolio Repo", path: "ariellerevis/portfolio", href: portfolioUrl },
   { id: "linkedin", title: "LinkedIn", path: "linkedin.com/in/arielle-revis", href: linkedInUrl },
   { id: "resume", title: "Resume", path: "Arielle-Revis-Resume.pdf", href: resumeUrl },
 ];
@@ -139,7 +139,7 @@ export function ActivityBar({ activeIcon, onIconClick }: ActivityBarProps) {
           rel="noopener noreferrer"
           onClick={() => onIconClick("portfolio")}
           className={buttonClass(activeIcon === "portfolio")}
-          aria-label="Open portfolio site"
+          aria-label="Open portfolio repo"
         >
           <Globe className="w-5 h-5" />
         </a>
