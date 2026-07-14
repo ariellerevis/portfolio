@@ -19,10 +19,10 @@ const portfolioTree: FileItem[] = [
     name: "projects",
     type: "folder",
     children: [
-      { id: "project-workflow", name: "workflow-dashboard.tsx", type: "file", extension: "tsx" },
-      { id: "project-automation", name: "automation-engine.tsx", type: "file", extension: "tsx" },
-      { id: "project-design", name: "design-system.tsx", type: "file", extension: "tsx" },
-      { id: "case-studies", name: "case-studies.json", type: "file", extension: "json" },
+      { id: "project-workflow", name: "pathai.tsx", type: "file", extension: "tsx" },
+      { id: "project-automation", name: "rent-vs-buy.r", type: "file", extension: "r" },
+      { id: "project-design", name: "schedule-sync.php", type: "file", extension: "php" },
+      { id: "case-studies", name: "projects.json", type: "file", extension: "json" },
     ],
   },
   {
@@ -39,17 +39,10 @@ const portfolioTree: FileItem[] = [
     name: "skills",
     type: "folder",
     children: [
-      { id: "skill-product", name: "product.ts", type: "file", extension: "ts" },
-      { id: "skill-design", name: "design.css", type: "file", extension: "css" },
-      { id: "skill-engineering", name: "engineering.js", type: "file", extension: "js" },
-    ],
-  },
-  {
-    id: "writing",
-    name: "writing",
-    type: "folder",
-    children: [
-      { id: "notes", name: "notes.md", type: "file", extension: "md" },
+      { id: "skill-product", name: "software.py", type: "file", extension: "py" },
+      { id: "skill-design", name: "databases.sql", type: "file", extension: "sql" },
+      { id: "skill-engineering", name: "stack.ts", type: "file", extension: "ts" },
+      { id: "interests", name: "interests.md", type: "file", extension: "md" },
     ],
   },
   { id: "contact", name: "contact.md", type: "file", extension: "md" },

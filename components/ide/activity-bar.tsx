@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ArrowUpRight, FileText, Files, GitBranch, Search, User, X } from "lucide-react";
+import { ArrowUpRight, FileText, Files, Globe, Search, User, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface ActivityBarProps {
@@ -9,21 +9,35 @@ interface ActivityBarProps {
   onIconClick: (icon: string) => void;
 }
 
-const githubUrl = "https://github.com/ariellerevis/";
+const portfolioUrl = "https://revisa1.github.io";
 const linkedInUrl = "https://www.linkedin.com/in/arielle-revis/";
 const resumeUrl = "/Arielle-Revis-Resume.pdf";
 
 type SearchItem =
-  | { id: string; title: string; path: string; route: string; href?: never }
-  | { id: string; title: string; path: string; href: string; route?: never };
+  | { id: string; title: string; path: string; route: string; href?: never; keywords?: string }
+  | { id: string; title: string; path: string; href: string; route?: never; keywords?: string };
 
 const searchItems: SearchItem[] = [
-  { id: "about", title: "About", path: "~/portfolio/about.md", route: "about" },
-  { id: "projects", title: "Projects", path: "~/portfolio/projects/", route: "projects" },
-  { id: "experience", title: "Experience", path: "~/portfolio/experience/roles.md", route: "experience" },
-  { id: "skills", title: "Skills", path: "~/portfolio/skills/", route: "skills" },
-  { id: "contact", title: "Contact", path: "~/portfolio/contact.md", route: "contact" },
-  { id: "github", title: "GitHub", path: "github.com/ariellerevis", href: githubUrl },
+  { id: "about", title: "About", path: "~/portfolio/about.md", route: "about", keywords: "RPI ITWS Business Analytics GPA Founders White Key CISSE RC3TF" },
+  { id: "projects", title: "Projects", path: "~/portfolio/projects/", route: "projects", keywords: "PathAI Rent Buy Housing Tool Schedule Sync" },
+  { id: "pathai", title: "PathAI", path: "~/portfolio/projects/pathai.tsx", route: "project-workflow", keywords: "academic advising scheduling career planning Next.js TypeScript FastAPI PostgreSQL Supabase RAG Upstash Vector" },
+  { id: "rent-vs-buy", title: "Rent vs. Buy Housing Tool", path: "~/portfolio/projects/rent-vs-buy.r", route: "project-automation", keywords: "Bloomberg Zillow FRED real estate financial model analytics" },
+  { id: "schedule-sync", title: "Schedule Sync", path: "~/portfolio/projects/schedule-sync.php", route: "project-design", keywords: "PHP MySQL AJAX JSON University ID calendar course planning 300 students" },
+  { id: "projects-json", title: "Projects Index", path: "~/portfolio/projects/projects.json", route: "case-studies", keywords: "all projects case studies PathAI Rent Buy Schedule Sync" },
+  { id: "experience", title: "Experience", path: "~/portfolio/experience/roles.md", route: "experience", keywords: "Deloitte RPI Cybersecurity Collaboratory Voorhees Help Desk ACM James Fund Alpha Phi Ski Snowboard" },
+  { id: "deloitte-it-assurance", title: "Deloitte Discovery II - IT Assurance", path: "~/portfolio/experience/roles.md#deloitte-it-assurance", route: "role-deloitte-ii", keywords: "June 2026 SAP SOD SM20 change management audit logs automated agent Fortune 500 aerospace defense" },
+  { id: "deloitte-rfa", title: "Deloitte Discovery I - Risk & Financial Advisory", path: "~/portfolio/experience/roles.md#deloitte-risk-financial-advisory", route: "role-deloitte-i", keywords: "July 2025 August 2025 acquisition targets Leukemia Lymphoma Society LLS engagement roadmap" },
+  { id: "research", title: "Generative AI + Cybersecurity Research", path: "~/portfolio/experience/roles.md#rpi-cybersecurity-research", route: "role-research", keywords: "Rensselaer Cybersecurity Collaboratory human subjects ISC2 CISSE pedagogy datasets" },
+  { id: "help-desk", title: "Help Desk Technician", path: "~/portfolio/experience/roles.md#help-desk", route: "role-help-desk", keywords: "Voorhees Computing Center tickets hardware software network support 300 activities" },
+  { id: "leadership", title: "Leadership & Activities", path: "~/portfolio/experience/impact.md", route: "impact", keywords: "ACM Women James Fund Head of Risk Alpha Phi Director Finance Ski Snowboard Vice President" },
+  { id: "james-fund", title: "James Fund - Head of Risk", path: "~/portfolio/experience/impact.md#james-fund", route: "leadership-james-fund", keywords: "$243K student-managed investment fund S&P 500 risk monitoring Excel performance tracking" },
+  { id: "skills", title: "Skills", path: "~/portfolio/skills/", route: "skills", keywords: "Python R C++ C LaTeX SQL Assembly JavaScript React Node.js AWS Azure Vercel MongoDB Supabase PostgreSQL MySQL" },
+  { id: "software", title: "Software Skills", path: "~/portfolio/skills/software.py", route: "skill-product", keywords: "Python R C++ C LaTeX SQL Assembly JavaScript" },
+  { id: "databases", title: "Databases", path: "~/portfolio/skills/databases.sql", route: "skill-design", keywords: "MongoDB Supabase PostgreSQL MySQL" },
+  { id: "stack", title: "Libraries & Cloud", path: "~/portfolio/skills/stack.ts", route: "skill-engineering", keywords: "React Node.js AWS Azure Vercel" },
+  { id: "interests", title: "Interests", path: "~/portfolio/skills/interests.md", route: "interests", keywords: "AI Skiing Reading Marvel Weightlifting Game of Thrones Crocheting" },
+  { id: "contact", title: "Contact", path: "~/portfolio/contact.md", route: "contact", keywords: "email arielle.a.revis@gmail.com NJ NY Miami LinkedIn" },
+  { id: "portfolio", title: "Portfolio", path: "revisa1.github.io", href: portfolioUrl },
   { id: "linkedin", title: "LinkedIn", path: "linkedin.com/in/arielle-revis", href: linkedInUrl },
   { id: "resume", title: "Resume", path: "Arielle-Revis-Resume.pdf", href: resumeUrl },
 ];
@@ -41,7 +55,9 @@ export function ActivityBar({ activeIcon, onIconClick }: ActivityBarProps) {
     }
 
     return searchItems.filter((item) => {
-      return `${item.title} ${item.path}`.toLowerCase().includes(normalizedQuery);
+      return `${item.title} ${item.path} ${item.keywords ?? ""}`
+        .toLowerCase()
+        .includes(normalizedQuery);
     });
   }, [query]);
 
@@ -118,14 +134,14 @@ export function ActivityBar({ activeIcon, onIconClick }: ActivityBarProps) {
         </button>
 
         <a
-          href={githubUrl}
+          href={portfolioUrl}
           target="_blank"
           rel="noopener noreferrer"
-          onClick={() => onIconClick("github")}
-          className={buttonClass(activeIcon === "github")}
-          aria-label="Open GitHub profile"
+          onClick={() => onIconClick("portfolio")}
+          className={buttonClass(activeIcon === "portfolio")}
+          aria-label="Open portfolio site"
         >
-          <GitBranch className="w-5 h-5" />
+          <Globe className="w-5 h-5" />
         </a>
       </div>
 

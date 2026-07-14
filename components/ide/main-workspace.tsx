@@ -6,6 +6,7 @@ import InteractiveDots from "@/components/ui/dots-pattern";
 
 interface MainWorkspaceProps {
   activeSection: string;
+  activeFile: string | null;
   onNavigate: (section: string) => void;
   onToggleExplorer: () => void;
   onToggleAssistant: () => void;
@@ -16,10 +17,11 @@ interface MainWorkspaceProps {
 }
 
 const typewriterPhrases = [
-  "product thinking",
-  "design systems",
-  "usable interfaces",
-  "working prototypes",
+  "AI + cybersecurity",
+  "IT assurance",
+  "full-stack apps",
+  "financial analytics",
+  "student leadership",
 ];
 
 function useLoopingTypewriter(phrases: string[]) {
@@ -54,8 +56,27 @@ function useLoopingTypewriter(phrases: string[]) {
   return phrases[phraseIndex].slice(0, characterIndex);
 }
 
+function scrollWorkspaceTo(targetId: string) {
+  const target = document.getElementById(targetId);
+  const scroller = document.querySelector("main");
+
+  if (!target || !(scroller instanceof HTMLElement)) return;
+
+  const targetTop =
+    target.getBoundingClientRect().top -
+    scroller.getBoundingClientRect().top +
+    scroller.scrollTop -
+    24;
+
+  scroller.scrollTo({
+    top: Math.max(targetTop, 0),
+    behavior: "smooth",
+  });
+}
+
 export function MainWorkspace({
   activeSection,
+  activeFile,
   onNavigate,
   onToggleExplorer,
   onToggleAssistant,
@@ -65,7 +86,7 @@ export function MainWorkspace({
   isTerminalOpen,
 }: MainWorkspaceProps) {
   return (
-    <div className="flex-1 bg-workspace overflow-y-auto">
+    <main className="flex-1 bg-workspace overflow-y-auto">
       <div className="min-h-full flex flex-col">
         {(activeSection === "home" || activeSection === "about") && (
           <HomeSection
@@ -77,12 +98,12 @@ export function MainWorkspace({
             isTerminalOpen={isTerminalOpen}
           />
         )}
-        {activeSection === "projects" && <ProjectsSection />}
-        {activeSection === "experience" && <ExperienceSection />}
-        {activeSection === "skills" && <SkillsSection />}
+        {activeSection === "projects" && <ProjectsSection activeFile={activeFile} />}
+        {activeSection === "experience" && <ExperienceSection activeFile={activeFile} />}
+        {activeSection === "skills" && <SkillsSection activeFile={activeFile} />}
         {activeSection === "contact" && <ContactSection />}
       </div>
-    </div>
+    </main>
   );
 }
 
@@ -124,13 +145,13 @@ function HomeSection({
         <div className="px-2 py-8 text-center sm:px-6 sm:py-10 md:px-10">
           <div className="mx-auto max-w-4xl">
             <div className="font-mono text-xs text-muted-foreground mb-4">~/portfolio/about.md</div>
-            <h1 className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-bold tracking-tight mb-6 leading-none">
+            <h1 className="whitespace-nowrap text-[2.75rem] sm:text-7xl md:text-8xl lg:text-9xl font-bold tracking-tight mb-6 leading-none">
               <span className="text-accent-blue">~/</span>
               <span className="text-foreground">arielle</span>
             </h1>
-            <p className="font-mono text-base sm:text-lg md:text-xl text-muted-foreground">
+            <p className="mx-auto max-w-3xl font-mono text-sm leading-relaxed text-muted-foreground sm:text-lg md:text-xl">
               <span className="text-muted-foreground/60">{`/*`}</span>
-              {" "}turning ideas into working systems{" "}
+              {" "}building useful systems across AI, finance, and student life{" "}
               <span className="text-muted-foreground/60">{`*/`}</span>
             </p>
             <div
@@ -191,35 +212,36 @@ function HomeSection({
             <h2 className="text-2xl font-bold mb-5 text-foreground">About</h2>
             <div className="space-y-5 text-muted-foreground leading-relaxed">
               <p>
-                {`I'm a systems-minded builder who turns vague ideas into working products. My approach blends
-                product thinking, design intuition, and technical execution - I care about both the big picture
-                and the implementation details.`}
+                {`I'm an RPI student studying Information Technology Web Science and Business Analytics. My work
+                spans full-stack software, generative AI and cybersecurity research, investment analysis,
+                technical support, and campus leadership.`}
               </p>
               <p>
-                I work across the stack: defining problems, mapping user flows, designing interfaces, writing
-                code, and shipping features. I thrive in environments where I can own outcomes end-to-end.
+                I like building tools around real information: course planning data, financial market data,
+                student workflows, and cybersecurity learning signals. I care about making technical systems
+                easier to understand and use.
               </p>
             </div>
           </div>
 
           <div className="rounded-lg border border-border bg-panel/75 p-5 shadow-[0_16px_52px_rgba(0,0,0,0.16)] backdrop-blur-[1px] sm:p-6">
-            <h3 className="text-foreground font-semibold mb-4">How I Work</h3>
+            <h3 className="text-foreground font-semibold mb-4">Education & Honors</h3>
             <ul className="space-y-3 text-muted-foreground">
               <li className="flex items-start gap-3">
-                <span className="text-accent-blue font-mono">-&gt;</span>
-                <span>Start with the problem, not the solution</span>
+                <span className="shrink-0 text-accent-blue font-mono">-&gt;</span>
+                <span>Rensselaer Polytechnic Institute, B.S. expected May 2028</span>
               </li>
               <li className="flex items-start gap-3">
-                <span className="text-accent-blue font-mono">-&gt;</span>
-                <span>Prototype fast, iterate faster</span>
+                <span className="shrink-0 text-accent-blue font-mono">-&gt;</span>
+                <span>Information Technology Web Science and Business Analytics; GPA 3.96/4.00</span>
               </li>
               <li className="flex items-start gap-3">
-                <span className="text-accent-blue font-mono">-&gt;</span>
-                <span>Design systems that scale, not just features</span>
+                <span className="shrink-0 text-accent-blue font-mono">-&gt;</span>
+                <span>Founders Award, White Key Award, and Dean&apos;s List</span>
               </li>
               <li className="flex items-start gap-3">
-                <span className="text-accent-blue font-mono">-&gt;</span>
-                <span>Ship early, learn continuously</span>
+                <span className="shrink-0 text-accent-blue font-mono">-&gt;</span>
+                <span>Co-author of RC3TF: an Augmented Reality CTF, published in The Journal of CISSE</span>
               </li>
             </ul>
           </div>
@@ -229,41 +251,63 @@ function HomeSection({
   );
 }
 
-function ProjectsSection() {
+const projectTargetByFile: Record<string, string> = {
+  projects: "projects-overview",
+  "project-workflow": "project-pathai",
+  "project-automation": "project-rent-vs-buy",
+  "project-design": "project-schedule-sync",
+  "case-studies": "projects-overview",
+};
+
+function ProjectsSection({ activeFile }: { activeFile: string | null }) {
   const projects = [
     {
-      name: "Workflow Intelligence Dashboard",
-      file: "workflow-dashboard.tsx",
-      role: "Product + Frontend",
-      stack: ["React", "TypeScript", "Supabase", "AI APIs"],
-      description: "Transformed scattered team data into a searchable, AI-powered operating dashboard that surfaces insights automatically.",
-      impact: "Reduced context-switching time by 40%",
+      id: "project-pathai",
+      name: "PathAI",
+      file: "pathai.tsx",
+      role: "Team Lead + Full Stack",
+      stack: ["Next.js", "TypeScript", "FastAPI", "PostgreSQL", "Supabase", "Upstash Vector"],
+      description: "Directed a 5-person team to develop and deploy a containerized academic advising web application that centralizes student scheduling and career planning.",
+      impact: "Built with a custom RAG pipeline for advising support",
     },
     {
-      name: "Automation Engine",
-      file: "automation-engine.tsx",
+      id: "project-rent-vs-buy",
+      name: "Rent vs. Buy Housing Tool",
+      file: "rent-vs-buy.r",
+      role: "Analytics + Finance",
+      stack: ["Bloomberg", "Zillow", "FRED", "Financial Modeling"],
+      description: "Developed a full-stack analytics tool that delivers location-specific real estate insights from market and economic data implemented in a financial model.",
+      impact: "Combines real estate data with rent-vs-buy analysis",
+    },
+    {
+      id: "project-schedule-sync",
+      name: "Schedule Sync",
+      file: "schedule-sync.php",
       role: "Full Stack",
-      stack: ["Next.js", "Node.js", "PostgreSQL", "Temporal"],
-      description: "Built a visual workflow builder that lets non-technical users create complex automation sequences without code.",
-      impact: "Automated 200+ hours of manual work monthly",
-    },
-    {
-      name: "Design System",
-      file: "design-system.tsx",
-      role: "Design + Engineering",
-      stack: ["React", "Tailwind", "Storybook", "Figma"],
-      description: "Created a comprehensive component library with design tokens, accessibility baked in, and full documentation.",
-      impact: "Accelerated feature development by 3x",
+      stack: ["PHP", "MySQL", "AJAX", "JSON"],
+      description: "Built a course planning app with University ID login, AJAX-powered scheduling, interactive calendars, and automated JSON pipelines for live course information.",
+      impact: "Served 300+ students",
     },
   ];
 
+  useEffect(() => {
+    const targetId = activeFile ? projectTargetByFile[activeFile] : undefined;
+    if (!targetId) return;
+
+    window.requestAnimationFrame(() => scrollWorkspaceTo(targetId));
+  }, [activeFile]);
+
   return (
-    <div className="max-w-4xl mx-auto p-8 md:p-12">
+    <div id="projects-overview" className="max-w-4xl mx-auto p-8 md:p-12">
       <div className="font-mono text-xs text-muted-foreground mb-4">~/portfolio/projects/</div>
       <h2 className="text-3xl font-bold mb-8">Projects</h2>
       <div className="space-y-6">
         {projects.map((project) => (
-          <div key={project.name} className="bg-elevated rounded-lg border border-border p-6 hover:border-accent-blue/30 transition-colors">
+          <div
+            id={project.id}
+            key={project.name}
+            className="scroll-mt-8 bg-elevated rounded-lg border border-border p-6 hover:border-accent-blue/30 transition-colors"
+          >
             <div className="flex items-start justify-between mb-3">
               <div>
                 <h3 className="text-lg font-semibold text-foreground">{project.name}</h3>
@@ -292,40 +336,102 @@ function ProjectsSection() {
   );
 }
 
-function ExperienceSection() {
+const experienceTargetByFile: Record<string, string> = {
+  experience: "experience-overview",
+  roles: "experience-deloitte-discovery-ii",
+  impact: "experience-acm",
+  "role-deloitte-ii": "experience-deloitte-discovery-ii",
+  "role-deloitte-i": "experience-deloitte-discovery-i",
+  "role-research": "experience-research",
+  "role-help-desk": "experience-help-desk",
+  "leadership-acm": "experience-acm",
+  "leadership-james-fund": "experience-james-fund",
+};
+
+function ExperienceSection({ activeFile }: { activeFile: string | null }) {
   const experiences = [
     {
-      title: "Senior Product Engineer",
-      company: "TechCorp",
-      period: "2022 - Present",
-      description: "Leading product development for internal tools platform. Shipping features end-to-end from user research to production.",
-      highlights: ["Launched 3 major products", "Grew team from 2 to 8", "Established design system"],
+      id: "experience-deloitte-discovery-ii",
+      title: "Discovery II Intern - IT Assurance",
+      company: "Deloitte",
+      period: "June 2026 - Present",
+      description: "Collaborates with a globally distributed team on IT systems and workflow audits for a Fortune 500 aerospace and defense client.",
+      highlights: ["Enterprise SAP risk and compliance evaluation", "SOD conflicts, change management, and SM20 security audit logs", "Automated agent for unstructured audit data and risk anomaly detection"],
     },
     {
-      title: "Full Stack Developer",
-      company: "StartupXYZ",
-      period: "2020 - 2022",
-      description: "Built and scaled customer-facing applications. Owned entire features from database design to UI implementation.",
-      highlights: ["Scaled platform to 50k users", "Reduced load time by 60%", "Implemented CI/CD pipeline"],
+      id: "experience-deloitte-discovery-i",
+      title: "Discovery Intern - Risk & Financial Advisory",
+      company: "Deloitte",
+      period: "July 2025 - August 2025",
+      description: "Conducted financial analysis, market research, and strategic analysis on 2 acquisition targets for a social media platform.",
+      highlights: ["2 acquisition targets", "LLS software solution projected to increase engagement by 30%", "7-person team delivered 25% ahead of timeline"],
     },
     {
-      title: "Product Designer",
-      company: "DesignStudio",
-      period: "2018 - 2020",
-      description: "Designed digital products for clients across fintech, healthcare, and e-commerce. Conducted user research and usability testing.",
-      highlights: ["Designed 20+ products", "Led design workshops", "Created design documentation"],
+      id: "experience-research",
+      title: "Generative AI and Cybersecurity Research Assistant",
+      company: "Rensselaer Cybersecurity Collaboratory, RPI",
+      period: "August 2024 - May 2025",
+      description: "Studied how AI performs in cybersecurity education by organizing human-subject data and analyzing cybersecurity learning datasets.",
+      highlights: ["90+ data points organized", "5+ large datasets analyzed", "Research shared for ISC2 2024 and CISSE 2025"],
+    },
+    {
+      id: "experience-help-desk",
+      title: "Help Desk Technician",
+      company: "Voorhees Computing Center, RPI",
+      period: "January 2025 - Present",
+      description: "Diagnoses hardware, software, and network issues for students and staff while maintaining ticketing records and clear support communication.",
+      highlights: ["30+ technical issues resolved", "300+ support activities documented", "Technical concepts explained to non-technical users"],
+    },
+    {
+      id: "experience-acm",
+      title: "President",
+      company: "Association for Computing Machinery - Women's Chapter",
+      period: "April 2025 - April 2026",
+      description: "Led programs, collaborations, and curriculum-driven workshops designed to strengthen technical readiness and community engagement.",
+      highlights: ["Member engagement up 90%", "15+ industry and research collaborations", "10-member executive board"],
+    },
+    {
+      id: "experience-james-fund",
+      title: "Head of Risk",
+      company: "James Fund",
+      period: "December 2025 - Present",
+      description: "Monitors risk metrics and portfolio allocation for a $243K student-managed investment fund while developing a real-time risk monitoring system.",
+      highlights: ["Fund up 8.78% Jan-Sept 2025", "Outperformed S&P 500 by ~1%", "Replacing Excel-based performance tracking"],
+    },
+    {
+      id: "experience-alpha-phi",
+      title: "Director of Finance",
+      company: "Alpha Phi - Theta Tau Chapter",
+      period: "October 2025 - Present",
+      description: "Manages chapter billing, payments, and budget tracking while participating in service, fundraising, sisterhood, and women's leadership initiatives.",
+      highlights: ["Member billing", "Payments", "Budget tracking"],
+    },
+    {
+      id: "experience-ski-club",
+      title: "Vice President",
+      company: "Ski and Snowboard Club",
+      period: "August 2025 - December 2025",
+      description: "Directed a 15-member executive board and coordinated partnerships with 10+ ski resorts for RPI's largest student organization.",
+      highlights: ["15-member executive board", "10+ resort partnerships", "Membership growth up 10%"],
     },
   ];
 
+  useEffect(() => {
+    const targetId = activeFile ? experienceTargetByFile[activeFile] : undefined;
+    if (!targetId) return;
+
+    window.requestAnimationFrame(() => scrollWorkspaceTo(targetId));
+  }, [activeFile]);
+
   return (
-    <div className="max-w-3xl mx-auto p-8 md:p-12">
+    <div id="experience-overview" className="max-w-3xl mx-auto p-8 md:p-12">
       <div className="font-mono text-xs text-muted-foreground mb-4">~/portfolio/experience/roles.md</div>
-      <h2 className="text-3xl font-bold mb-8">Experience</h2>
+      <h2 className="text-3xl font-bold mb-8">Experience & Leadership</h2>
       <div className="relative">
         <div className="absolute left-0 top-0 bottom-0 w-px bg-border" />
         <div className="space-y-8 pl-6">
           {experiences.map((exp) => (
-            <div key={exp.title} className="relative">
+            <div id={exp.id} key={`${exp.company}-${exp.title}`} className="relative scroll-mt-8">
               <div className="absolute -left-6 top-2 w-3 h-3 rounded-full bg-accent-blue border-2 border-background" />
               <div className="font-mono text-xs text-muted-foreground mb-1">{exp.period}</div>
               <h3 className="text-lg font-semibold text-foreground">{exp.title}</h3>
@@ -346,37 +452,80 @@ function ExperienceSection() {
   );
 }
 
-function SkillsSection() {
+const skillsTargetByFile: Record<string, string> = {
+  skills: "skills-overview",
+  "skill-product": "skills-software",
+  "skill-design": "skills-databases",
+  "skill-engineering": "skills-stack",
+  interests: "skills-interests",
+};
+
+function SkillsSection({ activeFile }: { activeFile: string | null }) {
   const skillGroups = [
     {
-      name: "Product",
-      file: "product.ts",
-      skills: ["Problem framing", "Roadmap thinking", "User flows", "Prototyping", "Prioritization", "Metrics"],
+      id: "skills-software",
+      name: "Software",
+      file: "software.py",
+      skills: ["Python", "R", "C++", "C", "LaTeX", "SQL", "Assembly", "JavaScript"],
     },
     {
-      name: "Design",
-      file: "design.css",
-      skills: ["Interface systems", "Interaction design", "Information architecture", "Visual polish", "Accessibility", "Motion"],
+      id: "skills-stack",
+      name: "Libraries & Cloud",
+      file: "stack.ts",
+      skills: ["React", "Node.js", "AWS", "Azure", "Vercel"],
     },
     {
-      name: "Engineering",
-      file: "engineering.js",
-      skills: ["React", "TypeScript", "Next.js", "Node.js", "PostgreSQL", "APIs", "Testing", "CI/CD"],
+      id: "skills-databases",
+      name: "Databases",
+      file: "databases.sql",
+      skills: ["MongoDB", "Supabase", "PostgreSQL", "MySQL"],
     },
     {
-      name: "Systems",
-      file: "systems.md",
-      skills: ["Architecture", "Data modeling", "Automation", "Documentation", "Process design"],
+      id: "skills-tools",
+      name: "Tools",
+      file: "tools.md",
+      skills: ["Bloomberg", "WRDS", "GitHub", "Excel", "Word", "PowerPoint"],
+    },
+    {
+      id: "skills-ai",
+      name: "AI",
+      file: "ai-tools.md",
+      skills: ["Codex", "Claude", "Gemini", "Copilot"],
+    },
+    {
+      id: "skills-communication",
+      name: "Interpersonal",
+      file: "communication.md",
+      skills: ["Detail-oriented", "Public speaking", "Technical writing"],
+    },
+    {
+      id: "skills-languages",
+      name: "Languages",
+      file: "languages.md",
+      skills: ["English - native fluency", "Hebrew - conversational fluency"],
+    },
+    {
+      id: "skills-interests",
+      name: "Interests",
+      file: "interests.md",
+      skills: ["AI", "Skiing", "Reading", "Marvel", "Weightlifting", "Game of Thrones", "Crocheting"],
     },
   ];
 
+  useEffect(() => {
+    const targetId = activeFile ? skillsTargetByFile[activeFile] : undefined;
+    if (!targetId) return;
+
+    window.requestAnimationFrame(() => scrollWorkspaceTo(targetId));
+  }, [activeFile]);
+
   return (
-    <div className="max-w-4xl mx-auto p-8 md:p-12">
+    <div id="skills-overview" className="max-w-4xl mx-auto p-8 md:p-12">
       <div className="font-mono text-xs text-muted-foreground mb-4">~/portfolio/skills/</div>
       <h2 className="text-3xl font-bold mb-8">Skills</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {skillGroups.map((group) => (
-          <div key={group.name} className="bg-elevated rounded-lg border border-border p-6">
+          <div id={group.id} key={group.name} className="scroll-mt-8 bg-elevated rounded-lg border border-border p-6">
             <div className="flex items-center gap-3 mb-4">
               <h3 className="text-lg font-semibold text-foreground">{group.name}</h3>
               <span className="font-mono text-xs text-muted-foreground">{group.file}</span>
@@ -402,12 +551,12 @@ function ContactSection() {
       <h2 className="text-3xl font-bold mb-8">Contact</h2>
       <div className="space-y-6">
         <p className="text-muted-foreground leading-relaxed">
-          {`I'm currently open to select projects and opportunities. If you're building something 
-          interesting or want to collaborate, let's talk.`}
+          Arielle is based around NJ, NY, and Miami. The best ways to reach her are email,
+          LinkedIn, and her portfolio site.
         </p>
         <div className="space-y-4">
           <a 
-            href="mailto:hello@arielle.dev" 
+            href="mailto:arielle.a.revis@gmail.com" 
             className="flex items-center gap-3 p-4 bg-elevated rounded-lg border border-border hover:border-accent-blue/30 transition-colors group"
           >
             <div className="w-10 h-10 rounded-lg bg-accent-blue-soft flex items-center justify-center">
@@ -415,22 +564,22 @@ function ContactSection() {
             </div>
             <div>
               <div className="text-foreground font-medium group-hover:text-accent-blue transition-colors">Email</div>
-              <div className="text-sm text-muted-foreground">hello@arielle.dev</div>
+              <div className="text-sm text-muted-foreground">arielle.a.revis@gmail.com</div>
             </div>
             <ExternalLink className="w-4 h-4 text-muted-foreground ml-auto" />
           </a>
           <a
-            href="https://github.com/ariellerevis/"
+            href="https://revisa1.github.io"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-3 p-4 bg-elevated rounded-lg border border-border hover:border-accent-blue/30 transition-colors group"
           >
             <div className="w-10 h-10 rounded-lg bg-accent-blue-soft flex items-center justify-center">
-              <span className="text-accent-blue font-mono">gh</span>
+              <span className="text-accent-blue font-mono">www</span>
             </div>
             <div>
-              <div className="text-foreground font-medium group-hover:text-accent-blue transition-colors">GitHub</div>
-              <div className="text-sm text-muted-foreground">@ariellerevis</div>
+              <div className="text-foreground font-medium group-hover:text-accent-blue transition-colors">Portfolio</div>
+              <div className="text-sm text-muted-foreground">revisa1.github.io</div>
             </div>
             <ExternalLink className="w-4 h-4 text-muted-foreground ml-auto" />
           </a>
@@ -453,7 +602,7 @@ function ContactSection() {
         <div className="pt-6 border-t border-border">
           <span className="inline-flex items-center gap-2 px-3 py-1.5 bg-green-500/10 text-green-400 rounded-full text-sm">
             <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-            Available for select projects
+            RPI Class of 2028
           </span>
         </div>
       </div>

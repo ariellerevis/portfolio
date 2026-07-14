@@ -25,6 +25,14 @@ function getExtensionColor(extension?: string) {
       return "text-blue-400";
     case "js":
       return "text-yellow-400";
+    case "py":
+      return "text-green-400";
+    case "php":
+      return "text-indigo-400";
+    case "r":
+      return "text-sky-400";
+    case "sql":
+      return "text-cyan-400";
     case "css":
       return "text-purple-400";
     case "json":
@@ -61,6 +69,10 @@ function FileItemIcon({
     case "ts":
     case "js":
     case "css":
+    case "py":
+    case "php":
+    case "r":
+    case "sql":
       return <FileCode className={className} />;
     case "json":
       return <FileJson className={className} />;
