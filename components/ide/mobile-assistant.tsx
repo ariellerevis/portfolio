@@ -15,22 +15,28 @@ interface MobileAssistantContentProps {
 
 const suggestedQuestions = [
   "How was this site made?",
-  "Which project shows Arielle's product thinking?",
+  "Which projects are highlighted?",
   "What are Arielle's strongest skills?",
-  "What kind of roles is Arielle looking for?",
   "Tell me about her experience.",
+  "What does Arielle do at Deloitte?",
+  "What leadership roles has she held?",
+  "What are Arielle's interests?",
 ];
 
 const predefinedResponses: Record<string, string> = {
-  "How was this site made?": `This portfolio was built with Next.js 15, TypeScript, and Tailwind CSS. The IDE-inspired design uses a component-based architecture with an activity bar, file explorer, and responsive layout.`,
+  "How was this site made?": `This portfolio was built with Next.js, TypeScript, and Tailwind CSS. The IDE-inspired design uses an activity bar, file explorer, assistant panel, terminal, and responsive mobile sheets.`,
   
-  "Which project shows Arielle's product thinking?": `The Workflow Intelligence Dashboard is a great example. Arielle designed and built an AI-powered dashboard that surfaces relevant information automatically, reducing context-switching time by 40%.`,
+  "Which projects are highlighted?": `Arielle's resume highlights PathAI, a Rent vs. Buy Housing Tool, and Schedule Sync.\n\nPathAI is a containerized academic advising app. The housing tool uses Bloomberg, Zillow, and FRED data in a financial model. Schedule Sync is a PHP/MySQL course planning app serving 300+ students.`,
   
-  "What are Arielle's strongest skills?": `Arielle excels at bridging product, design, and engineering:\n\n- Systems thinking\n- Full-stack development (React, TypeScript, Node.js)\n- Product sense\n- Design execution`,
+  "What are Arielle's strongest skills?": `Arielle's resume lists Python, R, C++, C, LaTeX, SQL, Assembly, JavaScript, React, Node.js, Bloomberg, WRDS, GitHub, Excel, Word, PowerPoint, MongoDB, Supabase, PostgreSQL, MySQL, AWS, Azure, Vercel, Codex, Claude, Gemini, and Copilot.`,
   
-  "What kind of roles is Arielle looking for?": `Product engineering, design engineering, or senior full-stack roles with high autonomy and direct impact on users. Open to both full-time and select freelance projects.`,
+  "Tell me about her experience.": `Arielle has experience with Deloitte IT Assurance and Risk & Financial Advisory, the Rensselaer Cybersecurity Collaboratory, and the Voorhees Computing Center help desk.`,
+
+  "What does Arielle do at Deloitte?": `Her updated resume lists Discovery II - IT Assurance work on IT systems and workflow audits, SAP risk/compliance analysis, SOD conflicts, change management, SM20 security audit logs, and an automated agent for risk and compliance anomaly detection. She also completed Discovery I - Risk & Financial Advisory in 2025.`,
   
-  "Tell me about her experience.": `Arielle has experience spanning product, design, and engineering:\n\n- Senior Product Engineer at TechCorp\n- Full Stack Developer at StartupXYZ\n- Started as a Product Designer`,
+  "What leadership roles has she held?": `Her leadership roles include ACM Women's Chapter President, James Fund Head of Risk, Alpha Phi Director of Finance, and Ski and Snowboard Club Vice President.`,
+
+  "What are Arielle's interests?": `Her listed interests are AI, skiing, reading, Marvel, weightlifting, Game of Thrones, and crocheting.`,
 };
 
 function getResponse(question: string): string {
@@ -41,19 +47,25 @@ function getResponse(question: string): string {
     return predefinedResponses["How was this site made?"];
   }
   if (lowerQuestion.includes("product") || lowerQuestion.includes("project")) {
-    return predefinedResponses["Which project shows Arielle's product thinking?"];
+    return predefinedResponses["Which projects are highlighted?"];
   }
   if (lowerQuestion.includes("skill") || lowerQuestion.includes("strong")) {
     return predefinedResponses["What are Arielle's strongest skills?"];
   }
-  if (lowerQuestion.includes("role") || lowerQuestion.includes("looking") || lowerQuestion.includes("hire")) {
-    return predefinedResponses["What kind of roles is Arielle looking for?"];
+  if (lowerQuestion.includes("deloitte") || lowerQuestion.includes("audit") || lowerQuestion.includes("assurance") || lowerQuestion.includes("sap")) {
+    return predefinedResponses["What does Arielle do at Deloitte?"];
   }
   if (lowerQuestion.includes("experience") || lowerQuestion.includes("background")) {
     return predefinedResponses["Tell me about her experience."];
   }
+  if (lowerQuestion.includes("leadership") || lowerQuestion.includes("club") || lowerQuestion.includes("activity")) {
+    return predefinedResponses["What leadership roles has she held?"];
+  }
+  if (lowerQuestion.includes("interest") || lowerQuestion.includes("hobby")) {
+    return predefinedResponses["What are Arielle's interests?"];
+  }
   
-  return `Great question! I'm a guided assistant with preset responses. Feel free to try one of the suggested questions above, or explore the portfolio sections using the menu!`;
+  return `Great question. I'm a guided assistant with preset responses, so I can answer best about Arielle's resume-backed projects, experience, skills, leadership, education, and interests.`;
 }
 
 export function MobileAssistantContent({ onClose }: MobileAssistantContentProps) {

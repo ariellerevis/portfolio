@@ -18,22 +18,28 @@ interface AssistantPanelProps {
 
 const suggestedQuestions = [
   "How was this site made?",
-  "Which project shows Arielle's product thinking?",
+  "Which projects are highlighted?",
   "What are Arielle's strongest skills?",
-  "What kind of roles is Arielle looking for?",
   "Tell me about her experience.",
+  "What does Arielle do at Deloitte?",
+  "What leadership roles has she held?",
+  "What are Arielle's interests?",
 ];
 
 const predefinedResponses: Record<string, string> = {
-  "How was this site made?": `This portfolio was built with Next.js 15, TypeScript, and Tailwind CSS. The IDE-inspired design uses a component-based architecture with an activity bar, file explorer, and responsive layout. The site is fully responsive and works great on mobile too!`,
+  "How was this site made?": `This portfolio was built with Next.js, TypeScript, and Tailwind CSS. The IDE-inspired design uses a component-based architecture with an activity bar, file explorer, assistant panel, terminal, and responsive mobile sheets.`,
   
-  "Which project shows Arielle's product thinking?": `The Workflow Intelligence Dashboard is a great example. Arielle identified that teams were losing time switching between tools to find context. She designed and built an AI-powered dashboard that surfaces relevant information automatically, reducing context-switching time by 40%.`,
+  "Which projects are highlighted?": `Arielle's resume highlights three projects:\n\n- PathAI: a containerized academic advising web app built by a 5-person team with Next.js, TypeScript, FastAPI, PostgreSQL/Supabase, Upstash Vector, and a custom RAG pipeline.\n- Rent vs. Buy Housing Tool: a full-stack analytics tool using Bloomberg, Zillow, and FRED data in a financial model.\n- Schedule Sync: a PHP/MySQL course planning app serving 300+ students with University ID login, AJAX scheduling, interactive calendars, and JSON pipelines.`,
   
-  "What are Arielle's strongest skills?": `Arielle excels at bridging product, design, and engineering. Key strengths include:\n\n- Systems thinking - seeing the big picture while handling details\n- Full-stack development - React, TypeScript, Node.js, PostgreSQL\n- Product sense - framing problems and prioritizing solutions\n- Design execution - turning ideas into polished interfaces`,
+  "What are Arielle's strongest skills?": `Arielle's resume lists software, data, AI, and communication strengths:\n\n- Software: Python, R, C++, C, LaTeX, SQL, Assembly, JavaScript\n- Databases: MongoDB, Supabase, PostgreSQL, MySQL\n- Libraries/cloud: React, Node.js, AWS, Azure, Vercel\n- Tools: Bloomberg, WRDS, GitHub, Excel, Word, PowerPoint\n- AI tools: Codex, Claude, Gemini, Copilot\n- Interpersonal: detail-oriented work, public speaking, and technical writing`,
   
-  "What kind of roles is Arielle looking for?": `Arielle is interested in product engineering, design engineering, or senior full-stack roles where she can own outcomes end-to-end. She thrives in environments with high autonomy, interesting technical challenges, and direct impact on users. She's open to both full-time and select freelance projects.`,
+  "Tell me about her experience.": `Arielle has professional experience at Deloitte, RPI's Rensselaer Cybersecurity Collaboratory, and the Voorhees Computing Center.\n\nAt Deloitte, she is a Discovery II Intern in IT Assurance, working on IT systems and workflow audits, SAP risk/compliance analysis, SOD conflicts, change management, SM20 security audit logs, and an automated agent for risk and compliance anomaly detection. She previously completed Deloitte Discovery I in Risk & Financial Advisory. At the Collaboratory, she analyzed AI and cybersecurity education data. At the Help Desk, she resolves technical issues and documents support activity for students and staff.`,
+
+  "What does Arielle do at Deloitte?": `Her updated resume lists two Deloitte roles:\n\n- Discovery II Intern - IT Assurance (June 2026-Present): IT systems and workflow audits for a Fortune 500 aerospace and defense client, SAP risk/compliance evaluation, SOD conflicts, change management frameworks, SM20 security audit logs, and an automated agent for unstructured audit data.\n- Discovery I Intern - Risk & Financial Advisory (July 2025-August 2025): financial analysis, market research, strategic analysis on 2 acquisition targets, an LLS software solution projected to increase engagement by 30%, and a 7-person integration roadmap team.`,
   
-  "Tell me about her experience.": `Arielle has a diverse background spanning product, design, and engineering:\n\n- Currently a Senior Product Engineer at TechCorp, leading internal tools development\n- Previously Full Stack Developer at StartupXYZ, scaling the platform to 50k users\n- Started as a Product Designer, bringing user-centered thinking to every project\n\nThis cross-functional experience gives her a unique perspective on building products.`,
+  "What leadership roles has she held?": `Arielle has led across technical, finance, service, and campus organizations:\n\n- President, ACM Women's Chapter\n- Head of Risk, James Fund\n- Director of Finance, Alpha Phi - Theta Tau Chapter\n- Vice President, Ski and Snowboard Club`,
+
+  "What are Arielle's interests?": `Her listed interests are AI, skiing, reading, Marvel, weightlifting, Game of Thrones, and crocheting.`,
 };
 
 function getResponse(question: string): string {
@@ -48,20 +54,26 @@ function getResponse(question: string): string {
     return predefinedResponses["How was this site made?"];
   }
   if (lowerQuestion.includes("product") || lowerQuestion.includes("project")) {
-    return predefinedResponses["Which project shows Arielle's product thinking?"];
+    return predefinedResponses["Which projects are highlighted?"];
   }
   if (lowerQuestion.includes("skill") || lowerQuestion.includes("strong")) {
     return predefinedResponses["What are Arielle's strongest skills?"];
   }
-  if (lowerQuestion.includes("role") || lowerQuestion.includes("looking") || lowerQuestion.includes("hire") || lowerQuestion.includes("work")) {
-    return predefinedResponses["What kind of roles is Arielle looking for?"];
+  if (lowerQuestion.includes("deloitte") || lowerQuestion.includes("audit") || lowerQuestion.includes("assurance") || lowerQuestion.includes("sap")) {
+    return predefinedResponses["What does Arielle do at Deloitte?"];
   }
   if (lowerQuestion.includes("experience") || lowerQuestion.includes("background") || lowerQuestion.includes("history")) {
     return predefinedResponses["Tell me about her experience."];
   }
+  if (lowerQuestion.includes("leadership") || lowerQuestion.includes("club") || lowerQuestion.includes("activity") || lowerQuestion.includes("activities")) {
+    return predefinedResponses["What leadership roles has she held?"];
+  }
+  if (lowerQuestion.includes("interest") || lowerQuestion.includes("hobby") || lowerQuestion.includes("hobbies")) {
+    return predefinedResponses["What are Arielle's interests?"];
+  }
   
   // Default response
-  return `Great question! While I'm a guided portfolio assistant with pre-set responses, I can tell you that Arielle is a systems-minded builder who combines product thinking, design intuition, and technical execution. Feel free to explore the portfolio sections using the file tree, or try one of the suggested questions above!`;
+  return `Great question. I'm a guided portfolio assistant with preset responses, so I can answer best about Arielle's resume-backed projects, experience, skills, leadership, education, and interests.`;
 }
 
 export function AssistantPanel({ isOpen, onClose, onOpen }: AssistantPanelProps) {

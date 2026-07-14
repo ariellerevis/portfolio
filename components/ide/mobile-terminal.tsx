@@ -246,7 +246,7 @@ export function MobileTerminalSheet({
       case "whoami": {
         setHistory(prev => [...prev, { 
           type: "output", 
-          content: "Arielle - builder of useful systems, thoughtful interfaces, and working products."
+          content: "Arielle - RPI ITWS and Business Analytics student building across AI, finance, and full-stack systems."
         }]);
         break;
       }

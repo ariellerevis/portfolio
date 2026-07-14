@@ -26,10 +26,10 @@ export const virtualFileSystem: FileSystemNode = {
       type: "directory",
       route: "projects",
       children: [
-        { name: "workflow-dashboard.tsx", type: "file", route: "project-workflow" },
-        { name: "automation-engine.tsx", type: "file", route: "project-automation" },
-        { name: "design-system.tsx", type: "file", route: "project-design" },
-        { name: "case-studies.json", type: "file", route: "case-studies" },
+        { name: "pathai.tsx", type: "file", route: "project-workflow" },
+        { name: "rent-vs-buy.r", type: "file", route: "project-automation" },
+        { name: "schedule-sync.php", type: "file", route: "project-design" },
+        { name: "projects.json", type: "file", route: "case-studies" },
       ],
     },
     {
@@ -46,17 +46,10 @@ export const virtualFileSystem: FileSystemNode = {
       type: "directory",
       route: "skills",
       children: [
-        { name: "product.ts", type: "file", route: "skill-product" },
-        { name: "design.css", type: "file", route: "skill-design" },
-        { name: "engineering.js", type: "file", route: "skill-engineering" },
-      ],
-    },
-    {
-      name: "writing",
-      type: "directory",
-      route: "writing",
-      children: [
-        { name: "notes.md", type: "file", route: "notes" },
+        { name: "software.py", type: "file", route: "skill-product" },
+        { name: "databases.sql", type: "file", route: "skill-design" },
+        { name: "stack.ts", type: "file", route: "skill-engineering" },
+        { name: "interests.md", type: "file", route: "interests" },
       ],
     },
     { name: "contact.md", type: "file", route: "contact" },
@@ -344,7 +337,7 @@ export function Terminal({
       case "whoami": {
         setHistory(prev => [...prev, { 
           type: "output", 
-          content: "Arielle - builder of useful systems, thoughtful interfaces, and working products."
+          content: "Arielle - RPI ITWS and Business Analytics student building across AI, finance, and full-stack systems."
         }]);
         break;
       }
