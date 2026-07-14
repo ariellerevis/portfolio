@@ -1,6 +1,6 @@
 **Arielle Revis**
 
-https://revisa1.github.io\| arielle.a.revis@gmail.com \| NJ, NY, Miami
+https://github.com/ariellerevis/portfolio \| arielle.a.revis@gmail.com \| NJ, NY, Miami
 \| www.linkedin.com/in/arielle-revis
 
 **EDUCATION & HONORS**
