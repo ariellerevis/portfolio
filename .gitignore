@@ -15,6 +15,13 @@ __v0_jsx-dev-runtime.ts
 .v0-trash/
 .vercel/
 
+# planning and dev stuff
+wireframes/
+scripts/
+sketches/
+supabase/
+inspiration/
+
 # Environment variables
 .env*.local
 .env.example
